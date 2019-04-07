@@ -2,17 +2,19 @@
 var numSims = 1000;
 var numCardsInPool = 0;
 var numCardsOnMissionSuccess = 1;
+var missionSuccessCrowns = 0;
+var missionFailureCrowns = 0;
 var missionSuccessPercent = 50;
-var monsterCardCost = 500;
-var abilityCardCost = 500;
-var characterCardCost = 500;
+var cardCost = 500;
 var cardRefundAmount = 100;
+var sellCards = false;
 var onlySellDuplicates = false;
 
 // sim results data
 var totalMissions = 0;
 var totalMissionsWon = 0;
 var totalArray = [];
+var totalCrowns = 0;
 
 // card collection data
 // structure: {id: {numOwned}}
@@ -32,15 +34,18 @@ function getNumCardsOwned(cardId) {
 }
 
 function gatherData() {
-  //numCardsInPool = getFormValue("numCardsInPool");
-  numCardsInPool = document.getElementById("numCardsInPool").value;
+  numCardsInPool = getFormValue("numCardsInPool");
   missionSuccessPercent = getFormValue("missionSuccessPercent");
   numCardsOnMissionSuccess = getFormValue("missionSuccessCards");
 
-  monsterCardCost = getFormValue("monsterCardCost");
-  abilityCardCost = getFormValue("abilityCardCost");
-  characterCardCost = getFormValue("characterCardCost");
+  cardCost = getFormValue("cardCost");
   cardRefundAmount = getFormValue("cardRefundAmount");
+
+  missionSuccessCrowns = getFormValue("missionSuccessCrowns");
+  missionFailureCrowns = getFormValue("missionFailureCrowns");
+
+  sellCards = document.getElementById("sellCards").checked;
+  onlySellDuplicates = document.getElementById("onlySellDuplicates").checked;
 }
 
 function runSims() {
@@ -56,13 +61,13 @@ function runSims() {
     numCardsInPool = 0;
     numCardsOnMissionSuccess = 1;
     missionSuccessPercent = 50;
-    monsterCardCost = 500;
-    abilityCardCost = 500;
-    characterCardCost = 500;
+    cardCost = 500;
     cardRefundAmount = 100;
     onlySellDuplicates = false;
     totalMissions = 0;
     totalMissionsWon = 0;
+
+    totalCrowns = 0;
 
     cardCollection = {};
 
@@ -73,6 +78,15 @@ function runSims() {
     for(var x = 0; (x < safetyCheck) && !stopCondition; x++)
     {
       stopCondition = runSingleSim();
+      // if we didn't get the card we want, let's see if we can buy it here
+      if(!stopCondition)
+      {
+        if(totalCrowns >= cardCost)
+        {
+          // we can! we are done
+          stopCondition = true;
+        }
+      }
     }
 
     var innerHTMLString = "";
@@ -153,10 +167,17 @@ function runSingleSim() {
   {
     // it was! give 'em a card
     totalMissionsWon++;
+    // and some crowns!
+    totalCrowns += missionSuccessCrowns;
     for(var x = 0; x < numCardsOnMissionSuccess; x++)
     {
       getCard(selectCardId());
     }
+  }
+  else
+  {
+    // give 'em crowns on failure
+    totalCrowns += missionFailureCrowns;
   }
 
   //check for condition
@@ -183,12 +204,31 @@ function selectCardId()
 function getCard(cardId)
 {
   if(cardCollection[cardId] == null)
+  {
+    cardCollection[cardId] = {};
+    cardCollection[cardId].numOwned = 1;
+  }
+  else
+  {
+    cardCollection[cardId].numOwned++;
+  }
+
+  // after we receive a card, if we're selling cards, do that here
+  if(sellCards)
+  {
+    if(onlySellDuplicates)
     {
-      cardCollection[cardId] = {};
-      cardCollection[cardId].numOwned = 1;
+      if(getNumCardsOwned(cardId) > 1)
+      {
+        cardCollection[cardId]--;
+        totalCrowns += cardRefundAmount;
+      }
     }
     else
     {
-      cardCollection[cardId].numOwned++;
+      cardCollection[cardId]--;
+      if(cardCollection[cardId] == 0) { delete cardCollection[cardId]; }
+      totalCrowns += cardRefundAmount;
     }
+  }
 }

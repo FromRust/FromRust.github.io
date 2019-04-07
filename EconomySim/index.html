@@ -15,24 +15,28 @@
 		<button id="addMonster" onclick="addMonster()">Add Monster</button>
 		-->
 		<div id="costSettingsContainer">
-			Monster Card Cost: <input type="text" id="monsterCardCost" value=500 /><br />
-			Ability Card Cost: <input type="text" id="abilityCardCost" value=500 /><br />
-			Character Card Cost: <input type="text" id="characterCardCost" value=500 /><br />
+			Card Cost: <input type="text" id="cardCost" value=500 /><br />
 			Card Refund Amount: <input type="text" id="cardRefundAmount" value=100 /><br />
-		</div>
-		<br />
-		<u>Sim Settings</u><br />
-		<div id="simSettingsContainer">
-
 		</div>
 		<br />
 		<u>Card Pool Settings</u><br />
 		<div id="cardPoolSettings">
 			Total # of Unique Cards: <input type="text" id="numCardsInPool" value=100 /><br />
 			Successful Mission %: <input type="text" id="missionSuccessPercent" value=100 /><br />
-			# Cards on Mission Success: <input type="text" id="missionSuccessCards" value=1 /><br />
 		</div>
 		<br />
+		<u>Reward Settings</u>
+		<div id="rewardSettings">
+			# Cards on Mission Success: <input type="text" id="missionSuccessCards" value=1 /><br />
+			# Crowns on Mission Success: <input type="text" id="missionSuccessCrowns" value=100 /><br />
+			# Crowns on Mission Failure: <input type="text" id="missionFailureCrowns" value=10 /><br />
+		</div>
+		<br />
+		<u>Behavior Settings</u>
+		<div id="behaviorSettings">
+			Sell cards: <input type="checkbox" id="sellCards"><br />
+			Only sell duplicates: <input type="checkbox" id="onlySellDuplicates"><br />
+		</div>
 		<button id="run" onclick="runSims()">Run</button>
 	</div>
 	<div id="results">Result:
