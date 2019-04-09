@@ -15,8 +15,36 @@
 		<button id="addMonster" onclick="addMonster()">Add Monster</button>
 		-->
 		<div id="costSettingsContainer">
-			Card Cost: <input type="text" id="cardCost" value=500 /><br />
-			Card Refund Amount: <input type="text" id="cardRefundAmount" value=100 /><br />
+			<table id="costSettingsTable">
+				<tr>
+					<th></th><th>Card Costs</th><th>Card Refund Amounts</th>
+				</tr>
+				<tr>
+					<td>Characters:</td>
+					<td><input type="text" id="characterCardCost" value=2000 /></td>
+					<td><input type="text" id="characterCardRefund" value=200 /></td>
+				</tr>
+				<tr>
+					<td>Abilities:</td>
+					<td><input type="text" id="abilityCardCost" value=500 /></td>
+					<td><input type="text" id="abilityCardRefund" value=100 /></td>
+				</tr>
+				<tr>
+					<td>Augments:</td>
+					<td><input type="text" id="augmentCardCost" value=100 /></td>
+					<td><input type="text" id="augmentCardRefund" value=10 /></td>
+				</tr>
+				<tr>
+					<td>Blueprints:</td>
+					<td><input type="text" id="blueprintCardCost" value=500 /></td>
+					<td><input type="text" id="blueprintCardRefund" value=100 /></td>
+				</tr>
+				<tr>
+					<td>Monsters:</td>
+					<td><input type="text" id="monsterCardCost" value=200 /></td>
+					<td><input type="text" id="monsterCardRefund" value=25 /></td>
+				</tr>
+			</table>
 		</div>
 		<br />
 		<u>Card Pool Settings</u><br />

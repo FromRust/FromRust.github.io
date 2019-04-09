@@ -1,14 +1,30 @@
 // setting up global vars
+
+// settings - sim globals
 var numSims = 1000;
 var numCardsInPool = 0;
+var missionSuccessPercent = 50;
+var sellCards = false;
+var onlySellDuplicates = false;
+
+// settings - card costs
+var characterCardCost = 2000;
+var abilityCardCost = 500;
+var augmentCardCost = 100;
+var blueprintCardCost = 500;
+var monsterCardCost = 250;
+
+// settings - refunds
+var characterCardRefund = 200;
+var abilityCardRefund = 100;
+var augmentCardRefund = 10;
+var blueprintCardRefund = 100;
+var monsterCardRefund = 25;
+
+// settings - reward data
 var numCardsOnMissionSuccess = 1;
 var missionSuccessCrowns = 0;
 var missionFailureCrowns = 0;
-var missionSuccessPercent = 50;
-var cardCost = 500;
-var cardRefundAmount = 100;
-var sellCards = false;
-var onlySellDuplicates = false;
 
 // sim results data
 var totalMissions = 0;
@@ -19,6 +35,22 @@ var totalCrowns = 0;
 // card collection data
 // structure: {id: {numOwned}}
 var cardCollection = {};
+
+// card data
+// structure: {id (XYZ): { name: "xyz", type: XYZ }}
+var cardData = {};
+cardData[1] = { name: "TestCharacterCard", type: 1 };
+cardData[2] = { name: "TestAbilityCard", type: 2 };
+cardData[3] = { name: "TestAugmentCard", type: 3 };
+cardData[4] = { name: "TestBlueprintCard", type: 4 };
+cardData[5] = { name: "TestMonsterCard", type: 5 };
+
+// card types:
+// character - 1
+// ability - 2
+// augment - 3
+// blueprint - 4
+// monster - 5
 
 function getFormValue(id) {
   return parseInt((document.getElementById(id)).value);
@@ -36,16 +68,24 @@ function getNumCardsOwned(cardId) {
 function gatherData() {
   numCardsInPool = getFormValue("numCardsInPool");
   missionSuccessPercent = getFormValue("missionSuccessPercent");
+
   numCardsOnMissionSuccess = getFormValue("missionSuccessCards");
-
-  cardCost = getFormValue("cardCost");
-  cardRefundAmount = getFormValue("cardRefundAmount");
-
   missionSuccessCrowns = getFormValue("missionSuccessCrowns");
   missionFailureCrowns = getFormValue("missionFailureCrowns");
 
   sellCards = document.getElementById("sellCards").checked;
   onlySellDuplicates = document.getElementById("onlySellDuplicates").checked;
+
+  characterCardCost = getFormValue("characterCardCost");
+  characterCardRefund = getFormValue("characterCardRefund");
+  abilityCardCost = getFormValue("abilityCardCost");
+  abilityCardRefund = getFormValue("abilityCardRefund");
+  augmentCardCost = getFormValue("augmentCardCost");
+  augmentCardRefund = getFormValue("augmentCardRefund");
+  blueprintCardCost = getFormValue("blueprintCardCost");
+  blueprintCardRefund = getFormValue("blueprintCardRefund");
+  monsterCardCost = getFormValue("monsterCardCost");
+  monsterCardRefund = getFormValue("monsterCardRefund");
 }
 
 function runSims() {
@@ -58,17 +98,9 @@ function runSims() {
     var safetyCheck = 10000; // we dont do more than this many runs
     var stopCondition = false;
 
-    numCardsInPool = 0;
-    numCardsOnMissionSuccess = 1;
-    missionSuccessPercent = 50;
-    cardCost = 500;
-    cardRefundAmount = 100;
-    onlySellDuplicates = false;
     totalMissions = 0;
     totalMissionsWon = 0;
-
     totalCrowns = 0;
-
     cardCollection = {};
 
     // gather data from form
@@ -81,7 +113,8 @@ function runSims() {
       // if we didn't get the card we want, let's see if we can buy it here
       if(!stopCondition)
       {
-        if(totalCrowns >= cardCost)
+        //TODO: change "characterCardCost" to the appropriate card type
+        if(totalCrowns >= characterCardCost)
         {
           // we can! we are done
           stopCondition = true;
@@ -105,26 +138,6 @@ function runSims() {
 
   // display results
   displayResults();
-
-  /*innerHTMLString += "Total missions: " + totalMissions + "<br />";
-  innerHTMLString += "Total missions won: " + totalMissionsWon + "<br />";
-
-  innerHTMLString += getCardCollectionString();
-
-  document.getElementById("result").innerHTML = innerHTMLString;*/
-
-  // gather up results
-  /*
-  
-  var innerHTMLString = "";
-  innerHTMLString += "GOING FIRST: <br />";
-  innerHTMLString += "Wins: " + numWinsFirst + " || Losses: " + numLossesFirst + " || Rate: " + winRateFirst + "% || Avg. Injuries: " + avgInjuriesFirst + " || Avg. Rounds: " + avgRoundsFirst;
-  innerHTMLString += "<br />";
-  innerHTMLString += "GOING SECOND: <br />";
-  innerHTMLString += "Wins: " + numWinsSecond + " || Losses: " + numLossesSecond + " || Rate: " + winRateSecond + "% || Avg. Injuries: " + avgInjuriesSecond + " || Avg. Rounds: " + avgRoundsSecond;
-  document.getElementById("result").innerHTML = innerHTMLString;
-
-  */
 }
 
 function displayResults()
