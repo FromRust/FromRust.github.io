@@ -1,11 +1,14 @@
 // setting up global vars
 
 // settings - sim globals
-var numSims = 1000;
-var numCardsInPool = 0;
+var numSims = 10000;
 var missionSuccessPercent = 50;
+var desiredCard = 0;
+
+// settings - behavior
 var sellCards = false;
 var onlySellDuplicates = false;
+var desiredCardType = 0;
 
 // settings - card costs
 var characterCardCost = 2000;
@@ -45,12 +48,66 @@ cardData[3] = { name: "TestAugmentCard", type: 3 };
 cardData[4] = { name: "TestBlueprintCard", type: 4 };
 cardData[5] = { name: "TestMonsterCard", type: 5 };
 
-// card types:
-// character - 1
-// ability - 2
-// augment - 3
-// blueprint - 4
-// monster - 5
+// helper functions to grab costs and such
+function getCost(type)
+{
+  if(type == 1)
+  {
+    return characterCardCost;
+  }
+
+  if(type == 2)
+  {
+    return abilityCardCost;
+  }
+
+  if(type == 3)
+  {
+    return augmentCardCost;
+  }
+
+  if(type == 4)
+  {
+    return blueprintCardCost;
+  }
+
+  if(type == 5)
+  {
+    return monsterCardCost;
+  }
+
+  return -1;
+}
+
+function getRefund(type)
+{
+  if(type == 1)
+  {
+    return characterCardRefund;
+  }
+
+  if(type == 2)
+  {
+    return abilityCardRefund;
+  }
+
+  if(type == 3)
+  {
+    return augmentCardRefund;
+  }
+
+  if(type == 4)
+  {
+    return blueprintCardRefund;
+  }
+
+  if(type == 5)
+  {
+    return monsterCardRefund;
+  }
+
+  return -1;
+}
 
 function getFormValue(id) {
   return parseInt((document.getElementById(id)).value);
@@ -66,7 +123,6 @@ function getNumCardsOwned(cardId) {
 }
 
 function gatherData() {
-  numCardsInPool = getFormValue("numCardsInPool");
   missionSuccessPercent = getFormValue("missionSuccessPercent");
 
   numCardsOnMissionSuccess = getFormValue("missionSuccessCards");
@@ -75,6 +131,7 @@ function gatherData() {
 
   sellCards = document.getElementById("sellCards").checked;
   onlySellDuplicates = document.getElementById("onlySellDuplicates").checked;
+  desiredCardType = document.querySelector('input[name="desiredCardType"]:checked').value;
 
   characterCardCost = getFormValue("characterCardCost");
   characterCardRefund = getFormValue("characterCardRefund");
@@ -106,6 +163,15 @@ function runSims() {
     // gather data from form
     gatherData(); // this is inefficient - we only need to do this once. TODO: refactor this
 
+    // decide which card we want
+    desiredCard = desiredCardType;
+    // for now this is just a type since we're testing
+    // TODO: helper function to find a random card of a given type from the pool
+    if(desiredCard == 0)
+    {
+      desiredCard = selectCardId();
+    }
+
     // run the missions
     for(var x = 0; (x < safetyCheck) && !stopCondition; x++)
     {
@@ -113,8 +179,7 @@ function runSims() {
       // if we didn't get the card we want, let's see if we can buy it here
       if(!stopCondition)
       {
-        //TODO: change "characterCardCost" to the appropriate card type
-        if(totalCrowns >= characterCardCost)
+        if(totalCrowns >= getCost(desiredCard))
         {
           // we can! we are done
           stopCondition = true;
@@ -162,7 +227,7 @@ function getAvgMissions()
 function getCardCollectionString()
 {
   var string = "";
-  for(var x = 0; x < numCardsInPool; x++)
+  for(var x = 0; x < Object.keys(cardData).length; x++)
   {
     var numCards = getNumCardsOwned(x);
     if(numCards > 0)
@@ -193,14 +258,21 @@ function runSingleSim() {
     totalCrowns += missionFailureCrowns;
   }
 
-  //check for condition
+  // see if we're good to go
+  if(checkStopCondition()) { return true; }
+
+  // if we aren't, try selling cards!
+  if(sellCards)
+  {
+    trySellCards();
+  }
+
   return checkStopCondition();
 }
 
 function checkStopCondition()
 {
-  // for testing, we just check to see if we have card ID #77
-  return (getNumCardsOwned(77) > 0);
+  return (getNumCardsOwned(desiredCard) > 0);
 }
 
 function runMission()
@@ -211,7 +283,7 @@ function runMission()
 
 function selectCardId()
 {
-  return Math.floor(Math.random() * numCardsInPool);
+  return Math.floor(Math.random() * Object.keys(cardData).length);
 }
 
 function getCard(cardId)
@@ -225,23 +297,28 @@ function getCard(cardId)
   {
     cardCollection[cardId].numOwned++;
   }
+}
 
-  // after we receive a card, if we're selling cards, do that here
-  if(sellCards)
+function trySellCards()
+{
+  for(var x = 0; x < Object.keys(cardData).length; x++)
   {
-    if(onlySellDuplicates)
+    var numCards = getNumCardsOwned(x);
+    if(x == desiredCard && numCards > 0) { return; } // temporary until we get a proper card pool
+
+    if(onlySellDuplicates && numCards > 1)
     {
-      if(getNumCardsOwned(cardId) > 1)
-      {
-        cardCollection[cardId]--;
-        totalCrowns += cardRefundAmount;
-      }
+      cardCollection[x]--;
+      totalCrowns += getRefund(x); 
     }
     else
     {
-      cardCollection[cardId]--;
-      if(cardCollection[cardId] == 0) { delete cardCollection[cardId]; }
-      totalCrowns += cardRefundAmount;
+      if(numCards > 0)
+      {
+        cardCollection[x]--;
+        if(cardCollection[x] == 0) { delete cardCollection[x]; }
+        totalCrowns += getRefund(x);
+      }
     }
   }
 }
