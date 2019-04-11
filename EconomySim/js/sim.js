@@ -48,6 +48,7 @@ var cardCollection = {};
 // card data
 // structure: {id (XYZ): { name: "xyz", type: XYZ }}
 var cardData = {};
+
 // characters
 cardData[1] = { name: "Lucky Jack", type: 1 };
 cardData[2] = { name: "Buster", type: 1 };
@@ -203,6 +204,7 @@ function getIdsForType(type) {
     return null;
   }
 
+  //todo: refactor this because holy fuck is it slowwwww
   var ids = [];
   for(var x = 1; x < Object.keys(cardData).length; x++)
   {
