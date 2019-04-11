@@ -29,6 +29,12 @@ var numCardsOnMissionSuccess = 1;
 var missionSuccessCrowns = 0;
 var missionFailureCrowns = 0;
 
+// settings - xp data
+var abilityCardXP = 0;
+var augmentCardXP = 0;
+var blueprintCardXP = 0;
+var xpPerLevel = 0;
+
 // sim results data
 var totalMissions = 0;
 var totalMissionsWon = 0;
@@ -42,11 +48,81 @@ var cardCollection = {};
 // card data
 // structure: {id (XYZ): { name: "xyz", type: XYZ }}
 var cardData = {};
-cardData[1] = { name: "TestCharacterCard", type: 1 };
-cardData[2] = { name: "TestAbilityCard", type: 2 };
-cardData[3] = { name: "TestAugmentCard", type: 3 };
-cardData[4] = { name: "TestBlueprintCard", type: 4 };
-cardData[5] = { name: "TestMonsterCard", type: 5 };
+// characters
+cardData[1] = { name: "Lucky Jack", type: 1 };
+cardData[2] = { name: "Buster", type: 1 };
+cardData[3] = { name: "Andrea", type: 1 };
+cardData[4] = { name: "Lena", type: 1 };
+
+//abilities
+cardData[5] = { name: "Brace for Impact", type: 2 };
+cardData[6] = { name: "Ready for Round 2", type: 2 };
+cardData[7] = { name: "Adrenaline Surge", type: 2 };
+cardData[8] = { name: "Patch Yourself Up", type: 2 };
+cardData[9] = { name: "Fight Through the Pain", type: 2 };
+cardData[10] = { name: "Blaze of Glory", type: 2 };
+cardData[11] = { name: "Called Shot", type: 2 };
+cardData[12] = { name: "Overwatch", type: 2 };
+cardData[13] = { name: "The Long Watch", type: 2 };
+cardData[14] = { name: "Draw a Bead", type: 2 };
+cardData[15] = { name: "Know Your Enemy", type: 2 };
+cardData[16] = { name: "Saw You Coming", type: 2 };
+cardData[17] = { name: "Scout Ahead", type: 2 };
+cardData[18] = { name: "Animate Scrap", type: 2 };
+cardData[19] = { name: "Jerry-Rig", type: 2 };
+cardData[20] = { name: "We Have the Technology", type: 2 };
+cardData[21] = { name: "Resourceful", type: 2 };
+cardData[22] = { name: "Backup Singer", type: 2 };
+cardData[23] = { name: "Tempo Shift", type: 2 };
+cardData[24] = { name: "Up to Eleven", type: 2 };
+cardData[25] = { name: "Soothing Melody", type: 2 };
+cardData[26] = { name: "Presto", type: 2 };
+cardData[27] = { name: "On a Loop", type: 2 };
+
+//augments
+cardData[28] = { name: "+1 CP", type: 3 };
+cardData[29] = { name: "+2 CP", type: 3 };
+cardData[30] = { name: "+1 EP", type: 3 };
+cardData[31] = { name: "+2 EP", type: 3 };
+
+//blueprints
+cardData[32] = { name: "Magnetic Coils", type: 4 };
+cardData[33] = { name: "Legs-O-Skeleton", type: 4 };
+cardData[34] = { name: "Homebrew Stims", type: 4 };
+cardData[35] = { name: "Auto-Injector", type: 4 };
+cardData[36] = { name: "Trophy Bag", type: 4 };
+cardData[37] = { name: "Biohazard Suit", type: 4 };
+cardData[38] = { name: "Laced Syringes", type: 4 };
+cardData[39] = { name: "Scope", type: 4 };
+cardData[40] = { name: "Chameleon Suit", type: 4 };
+cardData[41] = { name: "Laser Assisted Aim", type: 4 };
+cardData[42] = { name: "Radioactive Ammo", type: 4 };
+cardData[43] = { name: "Explosive Shells", type: 4 };
+cardData[44] = { name: "Build-a-Bomb Kit", type: 4 };
+cardData[45] = { name: "Moon Boots", type: 4 };
+cardData[46] = { name: "Rechargable Power Core", type: 4 };
+cardData[47] = { name: "Shorter Fuses", type: 4 };
+cardData[48] = { name: "Supply Drone", type: 4 };
+cardData[49] = { name: "Hotwired Gear", type: 4 };
+cardData[50] = { name: "Treble Amplifier", type: 4 };
+cardData[51] = { name: "Stereo Microphone", type: 4 };
+cardData[52] = { name: "Echo Shielding", type: 4 };
+cardData[53] = { name: "Microphone Bolas", type: 4 };
+cardData[54] = { name: "Polysynth Soundtable", type: 4 };
+cardData[55] = { name: "Equalizer", type: 4 };
+cardData[56] = { name: "Canteen", type: 4 };
+cardData[57] = { name: "Plate Armor", type: 4 };
+cardData[58] = { name: "Makeshift Weapon", type: 4 };
+cardData[59] = { name: "Treads", type: 4 };
+cardData[60] = { name: "Large Rock", type: 4 };
+
+//monsters
+//TBD - don't need these yet
+cardData[61] = { name: "TestMonsterCard", type: 5 };
+cardData[62] = { name: "TestMonsterCard", type: 5 };
+cardData[63] = { name: "TestMonsterCard", type: 5 };
+cardData[64] = { name: "TestMonsterCard", type: 5 };
+cardData[65] = { name: "TestMonsterCard", type: 5 };
 
 // helper functions to grab costs and such
 function getCost(type)
@@ -122,6 +198,23 @@ function getNumCardsOwned(cardId) {
   return 0;
 }
 
+function getIdsForType(type) {
+  if(type < 1 || type > 5) {
+    return null;
+  }
+
+  var ids = [];
+  for(var x = 1; x < Object.keys(cardData).length; x++)
+  {
+    if(cardData[x].type == type)
+    {
+      ids.push(x);
+    }
+  }
+
+  return ids;
+}
+
 function gatherData() {
   missionSuccessPercent = getFormValue("missionSuccessPercent");
 
@@ -143,10 +236,18 @@ function gatherData() {
   blueprintCardRefund = getFormValue("blueprintCardRefund");
   monsterCardCost = getFormValue("monsterCardCost");
   monsterCardRefund = getFormValue("monsterCardRefund");
+
+  abilityCardXP = getFormValue("abilityCardXP");
+  augmentCardXP = getFormValue("augmentCardXP");
+  blueprintCardXP = getFormValue("blueprintCardXP");
+  xpPerLevel = getFormValue("xpPerLevel");
 }
 
 function runSims() {
   totalArray = [];
+
+  // gather data from form
+  gatherData();
 
   for(var s = 0; s < numSims; s++)
   {
@@ -160,17 +261,8 @@ function runSims() {
     totalCrowns = 0;
     cardCollection = {};
 
-    // gather data from form
-    gatherData(); // this is inefficient - we only need to do this once. TODO: refactor this
-
     // decide which card we want
-    desiredCard = desiredCardType;
-    // for now this is just a type since we're testing
-    // TODO: helper function to find a random card of a given type from the pool
-    if(desiredCard == 0)
-    {
-      desiredCard = selectCardId();
-    }
+    desiredCard = selectCardId(desiredCardType);
 
     // run the missions
     for(var x = 0; (x < safetyCheck) && !stopCondition; x++)
@@ -179,7 +271,7 @@ function runSims() {
       // if we didn't get the card we want, let's see if we can buy it here
       if(!stopCondition)
       {
-        if(totalCrowns >= getCost(desiredCard))
+        if(totalCrowns >= getCost(cardData[desiredCard].type))
         {
           // we can! we are done
           stopCondition = true;
@@ -227,7 +319,7 @@ function getAvgMissions()
 function getCardCollectionString()
 {
   var string = "";
-  for(var x = 0; x < Object.keys(cardData).length; x++)
+  for(var x = 1; x < Object.keys(cardData).length; x++)
   {
     var numCards = getNumCardsOwned(x);
     if(numCards > 0)
@@ -249,7 +341,7 @@ function runSingleSim() {
     totalCrowns += missionSuccessCrowns;
     for(var x = 0; x < numCardsOnMissionSuccess; x++)
     {
-      getCard(selectCardId());
+      getCard(selectCardId(0));
     }
   }
   else
@@ -281,9 +373,15 @@ function runMission()
   return (Math.floor(Math.random() * 101) <= missionSuccessPercent);
 }
 
-function selectCardId()
+function selectCardId(type)
 {
-  return Math.floor(Math.random() * Object.keys(cardData).length);
+  if(type >= 1 && type <= 5)
+  {
+    var ids = getIdsForType(type);
+    return ids[Math.floor(Math.random() * ids.length)];
+  }
+
+  return Math.floor((Math.random() * Object.keys(cardData).length) + 1);
 }
 
 function getCard(cardId)
@@ -301,24 +399,23 @@ function getCard(cardId)
 
 function trySellCards()
 {
-  for(var x = 0; x < Object.keys(cardData).length; x++)
+  var keys = Object.keys(cardCollection);
+  for(var x = 0; x < keys; x++)
   {
-    var numCards = getNumCardsOwned(x);
-    if(x == desiredCard && numCards > 0) { return; } // temporary until we get a proper card pool
-
+    var key = keys[x];
+    var numCards = getNumCardsOwned(key);
     if(onlySellDuplicates && numCards > 1)
     {
-      cardCollection[x]--;
-      totalCrowns += getRefund(x); 
+      cardCollection[key].numOwned--;
+      totalCrowns += getRefund(cardData[key].type);
+      return;
     }
-    else
+
+    if(!onlySellDuplicates && numCards >= 1)
     {
-      if(numCards > 0)
-      {
-        cardCollection[x]--;
-        if(cardCollection[x] == 0) { delete cardCollection[x]; }
-        totalCrowns += getRefund(x);
-      }
+      cardCollection[key].numOwned--;
+      if(numCards == 1) { delete cardCollection[key]; }
+      totalCrowns += getRefund(cardData[key].type);
     }
   }
 }
