@@ -3,12 +3,12 @@
 // settings - sim globals
 var numSims = 10000;
 var missionSuccessPercent = 50;
-var desiredCard = 0;
 
 // settings - behavior
 var sellCards = false;
 var onlySellDuplicates = false;
 var desiredCardType = 0;
+var desiredTarget = 0;
 
 // settings - card costs
 var characterCardCost = 2000;
@@ -42,88 +42,12 @@ var totalArray = [];
 var totalCrowns = 0;
 
 // card collection data
-// structure: {id: {numOwned}}
+// structure: {type: {id: {numOwned = 5} }}
+// e.g. {1: {2: {numOwned = 1}, 3: {numOwned = 4}, etc} }}
 var cardCollection = {};
 
-// card data
-// structure: {id (XYZ): { name: "xyz", type: XYZ }}
-var cardData = {};
-
-// characters
-cardData[1] = { name: "Lucky Jack", type: 1 };
-cardData[2] = { name: "Buster", type: 1 };
-cardData[3] = { name: "Andrea", type: 1 };
-cardData[4] = { name: "Lena", type: 1 };
-
-//abilities
-cardData[5] = { name: "Brace for Impact", type: 2 };
-cardData[6] = { name: "Ready for Round 2", type: 2 };
-cardData[7] = { name: "Adrenaline Surge", type: 2 };
-cardData[8] = { name: "Patch Yourself Up", type: 2 };
-cardData[9] = { name: "Fight Through the Pain", type: 2 };
-cardData[10] = { name: "Blaze of Glory", type: 2 };
-cardData[11] = { name: "Called Shot", type: 2 };
-cardData[12] = { name: "Overwatch", type: 2 };
-cardData[13] = { name: "The Long Watch", type: 2 };
-cardData[14] = { name: "Draw a Bead", type: 2 };
-cardData[15] = { name: "Know Your Enemy", type: 2 };
-cardData[16] = { name: "Saw You Coming", type: 2 };
-cardData[17] = { name: "Scout Ahead", type: 2 };
-cardData[18] = { name: "Animate Scrap", type: 2 };
-cardData[19] = { name: "Jerry-Rig", type: 2 };
-cardData[20] = { name: "We Have the Technology", type: 2 };
-cardData[21] = { name: "Resourceful", type: 2 };
-cardData[22] = { name: "Backup Singer", type: 2 };
-cardData[23] = { name: "Tempo Shift", type: 2 };
-cardData[24] = { name: "Up to Eleven", type: 2 };
-cardData[25] = { name: "Soothing Melody", type: 2 };
-cardData[26] = { name: "Presto", type: 2 };
-cardData[27] = { name: "On a Loop", type: 2 };
-
-//augments
-cardData[28] = { name: "+1 CP", type: 3 };
-cardData[29] = { name: "+2 CP", type: 3 };
-cardData[30] = { name: "+1 EP", type: 3 };
-cardData[31] = { name: "+2 EP", type: 3 };
-
-//blueprints
-cardData[32] = { name: "Magnetic Coils", type: 4 };
-cardData[33] = { name: "Legs-O-Skeleton", type: 4 };
-cardData[34] = { name: "Homebrew Stims", type: 4 };
-cardData[35] = { name: "Auto-Injector", type: 4 };
-cardData[36] = { name: "Trophy Bag", type: 4 };
-cardData[37] = { name: "Biohazard Suit", type: 4 };
-cardData[38] = { name: "Laced Syringes", type: 4 };
-cardData[39] = { name: "Scope", type: 4 };
-cardData[40] = { name: "Chameleon Suit", type: 4 };
-cardData[41] = { name: "Laser Assisted Aim", type: 4 };
-cardData[42] = { name: "Radioactive Ammo", type: 4 };
-cardData[43] = { name: "Explosive Shells", type: 4 };
-cardData[44] = { name: "Build-a-Bomb Kit", type: 4 };
-cardData[45] = { name: "Moon Boots", type: 4 };
-cardData[46] = { name: "Rechargable Power Core", type: 4 };
-cardData[47] = { name: "Shorter Fuses", type: 4 };
-cardData[48] = { name: "Supply Drone", type: 4 };
-cardData[49] = { name: "Hotwired Gear", type: 4 };
-cardData[50] = { name: "Treble Amplifier", type: 4 };
-cardData[51] = { name: "Stereo Microphone", type: 4 };
-cardData[52] = { name: "Echo Shielding", type: 4 };
-cardData[53] = { name: "Microphone Bolas", type: 4 };
-cardData[54] = { name: "Polysynth Soundtable", type: 4 };
-cardData[55] = { name: "Equalizer", type: 4 };
-cardData[56] = { name: "Canteen", type: 4 };
-cardData[57] = { name: "Plate Armor", type: 4 };
-cardData[58] = { name: "Makeshift Weapon", type: 4 };
-cardData[59] = { name: "Treads", type: 4 };
-cardData[60] = { name: "Large Rock", type: 4 };
-
-//monsters
-//TBD - don't need these yet
-cardData[61] = { name: "TestMonsterCard", type: 5 };
-cardData[62] = { name: "TestMonsterCard", type: 5 };
-cardData[63] = { name: "TestMonsterCard", type: 5 };
-cardData[64] = { name: "TestMonsterCard", type: 5 };
-cardData[65] = { name: "TestMonsterCard", type: 5 };
+// for sims, what card we try to target
+var desiredCard = {type: 0, id: 0};
 
 // helper functions to grab costs and such
 function getCost(type)
@@ -190,33 +114,6 @@ function getFormValue(id) {
   return parseInt((document.getElementById(id)).value);
 }
 
-function getNumCardsOwned(cardId) {
-  if(cardCollection[cardId] != null)
-  {
-    return cardCollection[cardId].numOwned;
-  }
-
-  return 0;
-}
-
-function getIdsForType(type) {
-  if(type < 1 || type > 5) {
-    return null;
-  }
-
-  //todo: refactor this because holy fuck is it slowwwww
-  var ids = [];
-  for(var x = 1; x < Object.keys(cardData).length; x++)
-  {
-    if(cardData[x].type == type)
-    {
-      ids.push(x);
-    }
-  }
-
-  return ids;
-}
-
 function gatherData() {
   missionSuccessPercent = getFormValue("missionSuccessPercent");
 
@@ -227,6 +124,7 @@ function gatherData() {
   sellCards = document.getElementById("sellCards").checked;
   onlySellDuplicates = document.getElementById("onlySellDuplicates").checked;
   desiredCardType = document.querySelector('input[name="desiredCardType"]:checked').value;
+  desiredTarget = document.querySelector('input[name="desiredTarget"]:checked').value;
 
   characterCardCost = getFormValue("characterCardCost");
   characterCardRefund = getFormValue("characterCardRefund");
@@ -261,10 +159,10 @@ function runSims() {
     totalMissions = 0;
     totalMissionsWon = 0;
     totalCrowns = 0;
-    cardCollection = {};
+    resetCardCollection();
 
     // decide which card we want
-    desiredCard = selectCardId(desiredCardType);
+    desiredCard = selectRandomCard(desiredCardType);
 
     // run the missions
     for(var x = 0; (x < safetyCheck) && !stopCondition; x++)
@@ -273,7 +171,7 @@ function runSims() {
       // if we didn't get the card we want, let's see if we can buy it here
       if(!stopCondition)
       {
-        if(totalCrowns >= getCost(cardData[desiredCard].type))
+        if(totalCrowns >= getCost(desiredCard.type))
         {
           // we can! we are done
           stopCondition = true;
@@ -299,6 +197,15 @@ function runSims() {
   displayResults();
 }
 
+function resetCardCollection()
+{
+  cardCollection = {};
+  for(var x = 1; x < 6; x++)
+  {
+    cardCollection[x] = {};
+  }
+}
+
 function displayResults()
 {
   var innerHTMLString = "";
@@ -318,21 +225,6 @@ function getAvgMissions()
   return total;
 }
 
-function getCardCollectionString()
-{
-  var string = "";
-  for(var x = 1; x < Object.keys(cardData).length; x++)
-  {
-    var numCards = getNumCardsOwned(x);
-    if(numCards > 0)
-    {
-      string += "" + x + ": " + numCards + "<br />";
-    }
-  }
-
-  return string;
-}
-
 function runSingleSim() {  
   // was the mission a success?
   if(runMission())
@@ -343,7 +235,8 @@ function runSingleSim() {
     totalCrowns += missionSuccessCrowns;
     for(var x = 0; x < numCardsOnMissionSuccess; x++)
     {
-      getCard(selectCardId(0));
+      var card = selectRandomCard(0);
+      getCard(card.type, card.id);
     }
   }
   else
@@ -366,7 +259,19 @@ function runSingleSim() {
 
 function checkStopCondition()
 {
-  return (getNumCardsOwned(desiredCard) > 0);
+  if(desiredTarget == 1)
+  {
+    if(cardCollection[desiredCard.type] == null) { return false; }
+    if(cardCollection[desiredCard.type][desiredCard.id] == null) { return false; }
+    return (cardCollection[desiredCard.type][desiredCard.id].numOwned > 0);
+  }
+
+  if(desiredTarget == 2)
+  {
+    return true;
+  }
+  
+  return false;
 }
 
 function runMission()
@@ -375,49 +280,68 @@ function runMission()
   return (Math.floor(Math.random() * 101) <= missionSuccessPercent);
 }
 
-function selectCardId(type)
+function selectRandomCard(type)
 {
-  if(type >= 1 && type <= 5)
+  var card = {};
+  if(type == 0)
   {
-    var ids = getIdsForType(type);
-    return ids[Math.floor(Math.random() * ids.length)];
-  }
-
-  return Math.floor((Math.random() * Object.keys(cardData).length) + 1);
-}
-
-function getCard(cardId)
-{
-  if(cardCollection[cardId] == null)
-  {
-    cardCollection[cardId] = {};
-    cardCollection[cardId].numOwned = 1;
+    var index = Math.floor((Math.random() * allIds.length + 1));
+    card.type = allTypes[index];
+    card.id = allIds[index];
   }
   else
   {
-    cardCollection[cardId].numOwned++;
+    card.type = type;
+    var numCards = (Object.keys(cardData[type])).length;
+    card.id = cardData[type][Math.floor(Math.random() * numCards) + 1];
+  }
+
+  return card;
+}
+
+function getCard(cardType, cardId)
+{
+  if(cardCollection[cardType] == null)
+  {
+    cardCollection[cardType] = {};
+    cardCollection[cardType][cardId] = {};
+    cardCollection[cardType][cardId].numOwned = 1;
+  }
+  else if(cardCollection[cardType][cardId] == null)
+  {
+    cardCollection[cardType][cardId] = {};
+    cardCollection[cardType][cardId].numOwned = 1; 
+  }
+  else
+  {
+    cardCollection[cardType][cardId].numOwned++;
   }
 }
 
 function trySellCards()
 {
-  var keys = Object.keys(cardCollection);
-  for(var x = 0; x < keys; x++)
+  var types = Object.keys(cardCollection);
+  for(var t = 0; t < types.length; t++)
   {
-    var key = keys[x];
-    var numCards = getNumCardsOwned(key);
-    if(onlySellDuplicates && numCards > 1)
+    var type = types[t];
+    var ids = Object.keys(cardCollection[type]);
+    for(var i = 0; i < ids.length; i++)
     {
-      cardCollection[key].numOwned--;
-      totalCrowns += getRefund(cardData[key].type);
-      return;
-    }
+      var id = ids[i];
+      var numCards = cardCollection[type][id].numOwned;
+      if(onlySellDuplicates && numCards > 1)
+      {
+        cardCollection[type][id].numOwned--;
+        totalCrowns += getRefund(type);
+        return;
+      }
 
-    if(!onlySellDuplicates && numCards >= 1)
-    {
-      cardCollection[key].numOwned--;
-      if(numCards == 1) { delete cardCollection[key]; }
-      totalCrowns += getRefund(cardData[key].type);
-    }
+      if(!onlySellDuplicates && numCards >= 1)
+      {
+        cardCollection[type][id].numOwned--;
+        if(numCards == 1) { delete cardCollection[type][id]; }
+        totalCrowns += getRefund(type);
+      }
+    } 
   }
 }
