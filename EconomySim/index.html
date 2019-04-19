@@ -18,7 +18,7 @@
 		<div id="costSettingsContainer">
 			<table id="costSettingsTable">
 				<tr>
-					<th></th><th>Card Costs</th><th>Card Refund Amounts</th>
+					<th></th><th>Card Costs</th><th>Card Refund Amounts</th><th>XP Values</th>
 				</tr>
 				<tr>
 					<td>Characters:</td>
@@ -29,6 +29,13 @@
 					<td>Abilities:</td>
 					<td><input type="text" id="abilityCardCost" value=500 /></td>
 					<td><input type="text" id="abilityCardRefund" value=100 /></td>
+					<td><input type="text" id="abilityCardXP" value=100 /></td>
+				</tr>
+				<tr>
+					<td>Blueprints:</td>
+					<td><input type="text" id="blueprintCardCost" value=500 /></td>
+					<td><input type="text" id="blueprintCardRefund" value=100 /></td>
+					<td><input type="text" id="blueprintCardXP" value=50 /></td>
 				</tr>
 				<tr>
 					<td>Augments:</td>
@@ -36,34 +43,9 @@
 					<td><input type="text" id="augmentCardRefund" value=10 /></td>
 				</tr>
 				<tr>
-					<td>Blueprints:</td>
-					<td><input type="text" id="blueprintCardCost" value=500 /></td>
-					<td><input type="text" id="blueprintCardRefund" value=100 /></td>
-				</tr>
-				<tr>
 					<td>Monsters:</td>
 					<td><input type="text" id="monsterCardCost" value=200 /></td>
 					<td><input type="text" id="monsterCardRefund" value=25 /></td>
-				</tr>
-			</table>
-		</div>
-		<br />
-		<div id="xpSettingsContainer">
-			<table id="xpSettingsTable">
-				<tr>
-					<th></th><th>XP Values</th>
-				</tr>
-				<tr>
-					<td>Abilities:</td>
-					<td><input type="text" id="abilityCardXP" value=100 /></td>
-				</tr>
-				<tr>
-					<td>Augments:</td>
-					<td><input type="text" id="augmentCardXP" value=100 /></td>
-				</tr>
-				<tr>
-					<td>Blueprints:</td>
-					<td><input type="text" id="blueprintCardXP" value=100 /></td>
 				</tr>
 			</table>
 		</div>
@@ -90,7 +72,7 @@
 			Target behavior: <input type="radio" name="desiredTarget" value=1 checked>Random Card<input type="radio" name="desiredTarget" value=2>Level 1 to 2<br />
 			Sell cards: <input type="checkbox" id="sellCards"><br />
 			Only sell duplicates: <input type="checkbox" id="onlySellDuplicates"><br />
-			Desired type of card: <input type="radio" name="desiredCardType" value=0 checked>Random<input type="radio" name="desiredCardType" value=1>Character<input type="radio" name="desiredCardType" value=2>Ability<input type="radio" name="desiredCardType" value=3>Augment<input type="radio" name="desiredCardType" value=4>Blueprint<input type="radio" name="desiredCardType" value=5>Monster<br />
+			Desired type of card: <input type="radio" name="desiredCardType" value=0 checked>Random<input type="radio" name="desiredCardType" value=1>Ability<input type="radio" name="desiredCardType" value=2>Augment<input type="radio" name="desiredCardType" value=3>Blueprint<input type="radio" name="desiredCardType" value=4>Monster<br />
 		</div>
 		<button id="run" onclick="runSims()">Run</button>
 	</div>

@@ -46,33 +46,40 @@ var totalCrowns = 0;
 // e.g. {1: {2: {numOwned = 1}, 3: {numOwned = 4}, etc} }}
 var cardCollection = {};
 
-// for sims, what card we try to target
+// character collection data
+// for now this is just an array of XPs
+// 1 = LJ, 2 = Buster, 3 = Andrea, 4 = Lena
+var characterCollection = [0, 0, 0, 0, 0];
+
+// for sims, what card we try to target at any given time
+// sometimes this is random, sometimes it's specific, like when we're
+// going for level ups
 var desiredCard = {type: 0, id: 0};
 
 // helper functions to grab costs and such
 function getCost(type)
 {
-  if(type == 1)
+  /*if(type == 1)
   {
     return characterCardCost;
-  }
+  }*/
 
-  if(type == 2)
+  if(type == 1)
   {
     return abilityCardCost;
   }
 
-  if(type == 3)
+  if(type == 2)
   {
     return augmentCardCost;
   }
 
-  if(type == 4)
+  if(type == 3)
   {
     return blueprintCardCost;
   }
 
-  if(type == 5)
+  if(type == 4)
   {
     return monsterCardCost;
   }
@@ -82,27 +89,27 @@ function getCost(type)
 
 function getRefund(type)
 {
-  if(type == 1)
+  /*if(type == 1)
   {
     return characterCardRefund;
-  }
+  }*/
 
-  if(type == 2)
+  if(type == 1)
   {
     return abilityCardRefund;
   }
 
-  if(type == 3)
+  if(type == 2)
   {
     return augmentCardRefund;
   }
 
-  if(type == 4)
+  if(type == 3)
   {
     return blueprintCardRefund;
   }
 
-  if(type == 5)
+  if(type == 4)
   {
     return monsterCardRefund;
   }
@@ -138,9 +145,25 @@ function gatherData() {
   monsterCardRefund = getFormValue("monsterCardRefund");
 
   abilityCardXP = getFormValue("abilityCardXP");
-  augmentCardXP = getFormValue("augmentCardXP");
+  //augmentCardXP = getFormValue("augmentCardXP"); // temporarily disabling this
   blueprintCardXP = getFormValue("blueprintCardXP");
+
   xpPerLevel = getFormValue("xpPerLevel");
+
+  // replace xp values in card data
+  // this is redundant at the moment, but we will need this later, 
+  // when we have a way to do individual card settings
+  var abilityCardKeys = Object.keys(cardData[1]);
+  for(var x = 0; x < abilityCardKeys.length; x++)
+  {
+    cardData[1][abilityCardKeys[x]].xp = abilityCardXP;
+  }
+
+  var blueprintKeys = Object.keys(cardData[3]);
+  for(var x = 0; x < blueprintKeys.length; x++)
+  {
+    cardData[3][blueprintKeys[x]].xp = blueprintCardXP;
+  }
 }
 
 function runSims() {
@@ -171,10 +194,17 @@ function runSims() {
       // if we didn't get the card we want, let's see if we can buy it here
       if(!stopCondition)
       {
-        if(totalCrowns >= getCost(desiredCard.type))
+        if(desiredTarget == 1 && totalCrowns >= getCost(desiredCard.type))
         {
           // we can! we are done
           stopCondition = true;
+        }
+
+        // for desiredTarget 2, we should try to buy a card we don't have yet
+        if(desiredTarget == 2)
+        {
+          tryBuyCardForXP(1);
+          stopCondition = checkStopCondition();
         }
       }
     }
@@ -200,16 +230,18 @@ function runSims() {
 function resetCardCollection()
 {
   cardCollection = {};
-  for(var x = 1; x < 6; x++)
+  for(var x = 1; x < Object.keys(cardData).length; x++)
   {
     cardCollection[x] = {};
   }
+
+  characterCollection = [0, 0, 0, 0, 0];
 }
 
 function displayResults()
 {
   var innerHTMLString = "";
-  innerHTMLString += "Average missions to get 1 specific card: " + getAvgMissions() + "<br />";
+  innerHTMLString += "Average missions ran: " + getAvgMissions() + "<br />";
   document.getElementById("result").innerHTML = innerHTMLString;
 }
 
@@ -249,7 +281,7 @@ function runSingleSim() {
   if(checkStopCondition()) { return true; }
 
   // if we aren't, try selling cards!
-  if(sellCards)
+  if(desiredTarget == 1 && sellCards)
   {
     trySellCards();
   }
@@ -268,10 +300,16 @@ function checkStopCondition()
 
   if(desiredTarget == 2)
   {
-    return true;
+    // for this test, we're just going until we have lvl 2 on Lucky Jack
+    return calculateLevel(1) >= 1;
   }
   
   return false;
+}
+
+function calculateLevel(champion)
+{
+  return characterCollection[champion] / xpPerLevel;
 }
 
 function runMission()
@@ -293,7 +331,7 @@ function selectRandomCard(type)
   {
     card.type = type;
     var numCards = (Object.keys(cardData[type])).length;
-    card.id = cardData[type][Math.floor(Math.random() * numCards) + 1];
+    card.id = cardData[type][Math.floor(Math.random() * numCards) + 1].id;
   }
 
   return card;
@@ -301,21 +339,50 @@ function selectRandomCard(type)
 
 function getCard(cardType, cardId)
 {
+  var shouldAddXP = false;
   if(cardCollection[cardType] == null)
   {
     cardCollection[cardType] = {};
     cardCollection[cardType][cardId] = {};
     cardCollection[cardType][cardId].numOwned = 1;
+    shouldAddXP = true;
   }
   else if(cardCollection[cardType][cardId] == null)
   {
     cardCollection[cardType][cardId] = {};
-    cardCollection[cardType][cardId].numOwned = 1; 
+    cardCollection[cardType][cardId].numOwned = 1;
+    shouldAddXP = true;
   }
   else
   {
     cardCollection[cardType][cardId].numOwned++;
   }
+
+  if(shouldAddXP)
+  {
+    if(cardType == 1 || cardType == 3)
+    {
+      var character = cardData[cardType][cardId].character;
+      var amount = cardData[cardType][cardId].xp;
+      characterCollection[character] += amount;
+    }
+  }
+}
+
+function tryBuyCardForXP(character)
+{
+  // for now, we're just targeting Lucky Jack.
+  // so find the first card we don't own on him and try to buy it.
+
+  // first, bail if we don't have enough for abilities or blueprints.
+  if(totalCrowns < abilityCardCost && totalCrowns < blueprintCardCost)
+  {
+    return;
+  }
+
+  // ok. if we have enough for an ability, let's try that first, since they give the most xp
+  // so, first: find the first card we DON'T have for this character
+
 }
 
 function trySellCards()
@@ -339,7 +406,16 @@ function trySellCards()
       if(!onlySellDuplicates && numCards >= 1)
       {
         cardCollection[type][id].numOwned--;
-        if(numCards == 1) { delete cardCollection[type][id]; }
+        if(numCards == 1) { 
+          delete cardCollection[type][id];
+          // also, remove the XP if applicable
+          if(type == 1 || type == 3)
+          {
+            var character = cardData[type][id].character;
+            var amount = cardData[type][id].xp;
+            characterCollection[character] += amount;
+          }
+        }
         totalCrowns += getRefund(type);
       }
     } 
