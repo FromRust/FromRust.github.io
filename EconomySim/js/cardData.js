@@ -94,3 +94,24 @@ for(var x = 0; x < keys.length; x++)
 		allTypes.push(keys[x]);
 	}
 }
+
+// helper function to get all IDs for a type/character
+function getCardIDs(type, character)
+{
+	var keys = [];
+	for(var card in cardData[type])
+	{
+		if(type == 1 || type == 3)
+		{
+			if(cardData[type][card].character == character)
+			{
+				keys.push(card);
+			}
+		}
+		else
+		{
+			keys.push(card);
+		}
+	}
+	return keys;
+}

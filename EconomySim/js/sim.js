@@ -6,6 +6,7 @@ var missionSuccessPercent = 50;
 
 // settings - behavior
 var sellCards = false;
+var buyCards = false;
 var onlySellDuplicates = false;
 var desiredCardType = 0;
 var desiredTarget = 0;
@@ -129,6 +130,7 @@ function gatherData() {
   missionFailureCrowns = getFormValue("missionFailureCrowns");
 
   sellCards = document.getElementById("sellCards").checked;
+  buyCards = document.getElementById("buyCards").checked;
   onlySellDuplicates = document.getElementById("onlySellDuplicates").checked;
   desiredCardType = document.querySelector('input[name="desiredCardType"]:checked').value;
   desiredTarget = document.querySelector('input[name="desiredTarget"]:checked').value;
@@ -201,7 +203,7 @@ function runSims() {
         }
 
         // for desiredTarget 2, we should try to buy a card we don't have yet
-        if(desiredTarget == 2)
+        if(desiredTarget == 2 && buyCards)
         {
           tryBuyCardForXP(1);
           stopCondition = checkStopCondition();
@@ -382,7 +384,57 @@ function tryBuyCardForXP(character)
 
   // ok. if we have enough for an ability, let's try that first, since they give the most xp
   // so, first: find the first card we DON'T have for this character
+  if(totalCrowns > abilityCardCost)
+  {
+    // let's start by getting an array of ability cards for the character
+    var cardIds = getCardIDs(1, character);
+    // we can then compare that w/ the list that we have
+    // the first cardId we find that we don't have in our collection is the one we should buy
+    for(var x = 0; x < cardIds.length; x++)
+    {
+      var foundCard = false;
+      for(card in cardCollection[1])
+      {
+        if(cardIds[x] == card.id)
+        {
+          foundCard = true;
+          break;
+        }
+      }
 
+      if(!foundCard) { 
+        getCard(1, cardIds[x]);
+        totalCrowns -= abilityCardCost;
+        break;
+      }
+    }
+  }
+
+  // if we have enough left over for a blueprint (somehow), try that too
+  if(totalCrowns > blueprintCardCost)
+  {
+    var cardIds = getCardIDs(3, character);
+    // we can then compare that w/ the list that we have
+    // the first cardId we find that we don't have in our collection is the one we should buy
+    for(var x = 0; x < cardIds.length; x++)
+    {
+      var foundCard = false;
+      for(card in cardCollection[3])
+      {
+        if(cardIds[x] == card.id)
+        {
+          foundCard = true;
+          break;
+        }
+      }
+
+      if(!foundCard) { 
+        getCard(3, cardIds[x]);
+        totalCrowns -= blueprintCardCost;
+        break;
+      }
+    }
+  }
 }
 
 function trySellCards()
