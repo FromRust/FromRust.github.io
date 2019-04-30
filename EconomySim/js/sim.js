@@ -436,6 +436,8 @@ function tryLoadData()
       document.getElementById("missionSuccessCards").value = numCardsOnMissionSuccess;
       missionSuccessCrowns = settingsObj["missionSuccessCrowns"];
       document.getElementById("missionSuccessCrowns").value = missionSuccessCrowns;
+      missionFailureCrowns = settingsObj["missionFailureCrowns"];
+      document.getElementById("missionFailureCrowns").value = missionFailureCrowns;
       sellCards = settingsObj["sellCards"];
       document.getElementById("sellCards").checked = sellCards;
       buyCards = settingsObj["buyCards"];
