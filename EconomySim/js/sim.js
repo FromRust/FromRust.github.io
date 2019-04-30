@@ -11,36 +11,19 @@ var onlySellDuplicates = false;
 var desiredCardType = 0;
 var desiredTarget = 0;
 
-// settings - card costs
-var characterCardCost = 2000;
-var abilityCardCost = 500;
-var augmentCardCost = 100;
-var blueprintCardCost = 500;
-var monsterCardCost = 250;
-
-// settings - refunds
-var characterCardRefund = 200;
-var abilityCardRefund = 100;
-var augmentCardRefund = 10;
-var blueprintCardRefund = 100;
-var monsterCardRefund = 25;
-
 // settings - reward data
 var numCardsOnMissionSuccess = 1;
 var missionSuccessCrowns = 0;
 var missionFailureCrowns = 0;
-
-// settings - xp data
-var abilityCardXP = 0;
-var augmentCardXP = 0;
-var blueprintCardXP = 0;
-var xpPerLevel = 0;
 
 // sim results data
 var totalMissions = 0;
 var totalMissionsWon = 0;
 var totalArray = [];
 var totalCrowns = 0;
+
+// aggregates for convenient lookup later
+var lowestCost = [99999, 99999, 99999, 99999, 99999]; // one for every type
 
 // card collection data
 // structure: {type: {id: {numOwned = 5} }}
@@ -56,67 +39,6 @@ var characterCollection = [0, 0, 0, 0, 0];
 // sometimes this is random, sometimes it's specific, like when we're
 // going for level ups
 var desiredCard = {type: 0, id: 0};
-
-// helper functions to grab costs and such
-function getCost(type)
-{
-  /*if(type == 1)
-  {
-    return characterCardCost;
-  }*/
-
-  if(type == 1)
-  {
-    return abilityCardCost;
-  }
-
-  if(type == 2)
-  {
-    return augmentCardCost;
-  }
-
-  if(type == 3)
-  {
-    return blueprintCardCost;
-  }
-
-  if(type == 4)
-  {
-    return monsterCardCost;
-  }
-
-  return -1;
-}
-
-function getRefund(type)
-{
-  /*if(type == 1)
-  {
-    return characterCardRefund;
-  }*/
-
-  if(type == 1)
-  {
-    return abilityCardRefund;
-  }
-
-  if(type == 2)
-  {
-    return augmentCardRefund;
-  }
-
-  if(type == 3)
-  {
-    return blueprintCardRefund;
-  }
-
-  if(type == 4)
-  {
-    return monsterCardRefund;
-  }
-
-  return -1;
-}
 
 function getFormValue(id) {
   return parseInt((document.getElementById(id)).value);
@@ -135,37 +57,23 @@ function gatherData() {
   desiredCardType = document.querySelector('input[name="desiredCardType"]:checked').value;
   desiredTarget = document.querySelector('input[name="desiredTarget"]:checked').value;
 
-  characterCardCost = getFormValue("characterCardCost");
-  characterCardRefund = getFormValue("characterCardRefund");
-  abilityCardCost = getFormValue("abilityCardCost");
-  abilityCardRefund = getFormValue("abilityCardRefund");
-  augmentCardCost = getFormValue("augmentCardCost");
-  augmentCardRefund = getFormValue("augmentCardRefund");
-  blueprintCardCost = getFormValue("blueprintCardCost");
-  blueprintCardRefund = getFormValue("blueprintCardRefund");
-  monsterCardCost = getFormValue("monsterCardCost");
-  monsterCardRefund = getFormValue("monsterCardRefund");
+  // cost and XP here we go
+  for(var x = 0; x < totalCardsInPool; x++)
+  {
+    var type = allTypes[x];
+    var id = allIds[x];
 
-  abilityCardXP = getFormValue("abilityCardXP");
-  //augmentCardXP = getFormValue("augmentCardXP"); // temporarily disabling this
-  blueprintCardXP = getFormValue("blueprintCardXP");
+    cardData[type][id].cost = getFormValue("cardCost" + (x+1));
+    cardData[type][id].refund = getFormValue("cardRefund" + (x+1));
+    cardData[type][id].xp = getFormValue("cardXP" + (x+1));
+
+    if(cardData[type][id].cost < lowestCost[type])
+    {
+      lowestCost[type] = cardData[type][id];
+    }
+  }
 
   xpPerLevel = getFormValue("xpPerLevel");
-
-  // replace xp values in card data
-  // this is redundant at the moment, but we will need this later, 
-  // when we have a way to do individual card settings
-  var abilityCardKeys = Object.keys(cardData[1]);
-  for(var x = 0; x < abilityCardKeys.length; x++)
-  {
-    cardData[1][abilityCardKeys[x]].xp = abilityCardXP;
-  }
-
-  var blueprintKeys = Object.keys(cardData[3]);
-  for(var x = 0; x < blueprintKeys.length; x++)
-  {
-    cardData[3][blueprintKeys[x]].xp = blueprintCardXP;
-  }
 }
 
 function runSims() {
@@ -196,7 +104,7 @@ function runSims() {
       // if we didn't get the card we want, let's see if we can buy it here
       if(!stopCondition)
       {
-        if(desiredTarget == 1 && totalCrowns >= getCost(desiredCard.type))
+        if(desiredTarget == 1 && totalCrowns >= getCost(desiredCard.type, desiredCard.id))
         {
           // we can! we are done
           stopCondition = true;
@@ -245,6 +153,8 @@ function displayResults()
   var innerHTMLString = "";
   innerHTMLString += "Average missions ran: " + getAvgMissions() + "<br />";
   document.getElementById("result").innerHTML = innerHTMLString;
+
+  document.getElementById("resultsTab").click();
 }
 
 function getAvgMissions()
@@ -325,15 +235,17 @@ function selectRandomCard(type)
   var card = {};
   if(type == 0)
   {
-    var index = Math.floor((Math.random() * allIds.length + 1));
+    var index = Math.floor((Math.random() * allIds.length));
     card.type = allTypes[index];
     card.id = allIds[index];
   }
   else
   {
     card.type = type;
-    var numCards = (Object.keys(cardData[type])).length;
-    card.id = cardData[type][Math.floor(Math.random() * numCards) + 1].id;
+    var keys = Object.keys(cardData[type]);
+    var index = Math.floor(Math.random() * keys.length);
+    card.id = keys[index];
+
   }
 
   return card;
@@ -376,15 +288,25 @@ function tryBuyCardForXP(character)
   // for now, we're just targeting Lucky Jack.
   // so find the first card we don't own on him and try to buy it.
 
-  // first, bail if we don't have enough for abilities or blueprints.
-  if(totalCrowns < abilityCardCost && totalCrowns < blueprintCardCost)
+  // first, bail if we don't have enough for anything
+  var enoughToBuyAnything = false;
+  for(var x = 0; x < lowestCost.length; x++)
+  {
+    if(totalCrowns >= lowestCost[x])
+    {
+      enoughToBuyAnything = true;
+      break;
+    }
+  }
+
+  if(!enoughToBuyAnything)
   {
     return;
   }
-
+  
   // ok. if we have enough for an ability, let's try that first, since they give the most xp
   // so, first: find the first card we DON'T have for this character
-  if(totalCrowns > abilityCardCost)
+  if(totalCrowns > lowestCost[1])
   {
     // let's start by getting an array of ability cards for the character
     var cardIds = getCardIDs(1, character);
@@ -404,7 +326,7 @@ function tryBuyCardForXP(character)
 
       if(!foundCard) { 
         getCard(1, cardIds[x]);
-        totalCrowns -= abilityCardCost;
+        totalCrowns -= cardData[1][cardIds[x]].cost;
         break;
       }
     }
@@ -430,7 +352,7 @@ function tryBuyCardForXP(character)
 
       if(!foundCard) { 
         getCard(3, cardIds[x]);
-        totalCrowns -= blueprintCardCost;
+        totalCrowns -= cardData[3][cardIds[x]];
         break;
       }
     }
@@ -451,7 +373,7 @@ function trySellCards()
       if(onlySellDuplicates && numCards > 1)
       {
         cardCollection[type][id].numOwned--;
-        totalCrowns += getRefund(type);
+        totalCrowns += getRefund(type, id);
         return;
       }
 
@@ -465,10 +387,10 @@ function trySellCards()
           {
             var character = cardData[type][id].character;
             var amount = cardData[type][id].xp;
-            characterCollection[character] += amount;
+            characterCollection[character] -= amount;
           }
         }
-        totalCrowns += getRefund(type);
+        totalCrowns += getRefund(type, id);
       }
     } 
   }

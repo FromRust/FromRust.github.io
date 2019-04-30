@@ -1,55 +1,16 @@
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="css/sim.css">
-<script src="js/sim.js"></script>
-<script src="js/cardData.js"></script>
 </head>
 
 <body>
-	<div id="inputData">
-		<!--
-		<u>Global Settings</u><br />
-		Injury Penalties: <input type="checkbox" id="injuryPenalties" checked="true" /><br />
-		Number of Simulations: <input type="text" id="numSims" value=1000 /><br />
-		<br /><br />
-		<u>Monster Settings</u><br />
-		<button id="addMonster" onclick="addMonster()">Add Monster</button>
-		-->
-		<div id="costSettingsContainer">
-			<table id="costSettingsTable">
-				<tr>
-					<th></th><th>Card Costs</th><th>Card Refund Amounts</th><th>XP Values</th>
-				</tr>
-				<tr>
-					<td>Characters:</td>
-					<td><input type="text" id="characterCardCost" value=2000 /></td>
-					<td><input type="text" id="characterCardRefund" value=200 /></td>
-				</tr>
-				<tr>
-					<td>Abilities:</td>
-					<td><input type="text" id="abilityCardCost" value=500 /></td>
-					<td><input type="text" id="abilityCardRefund" value=100 /></td>
-					<td><input type="text" id="abilityCardXP" value=100 /></td>
-				</tr>
-				<tr>
-					<td>Blueprints:</td>
-					<td><input type="text" id="blueprintCardCost" value=500 /></td>
-					<td><input type="text" id="blueprintCardRefund" value=100 /></td>
-					<td><input type="text" id="blueprintCardXP" value=50 /></td>
-				</tr>
-				<tr>
-					<td>Augments:</td>
-					<td><input type="text" id="augmentCardCost" value=100 /></td>
-					<td><input type="text" id="augmentCardRefund" value=10 /></td>
-				</tr>
-				<tr>
-					<td>Monsters:</td>
-					<td><input type="text" id="monsterCardCost" value=200 /></td>
-					<td><input type="text" id="monsterCardRefund" value=25 /></td>
-				</tr>
-			</table>
-		</div>
-		<br />
+	<div class="tab">
+		<button class="tablinks" id="settingsTab" onclick="openTab(event, 'SettingsTab')">Settings</button>
+		<button class="tablinks" id="cardsTab" onclick="openTab(event, 'CardsTab')">Cards</button>
+		<button class="tablinks" id="resultsTab" onclick="openTab(event, 'ResultsTab')">Results</button>
+	</div>
+
+	<div id="SettingsTab" class="tabcontent">
 		<u>Leveling Settings</u><br />
 		<div id="levelingSettings">
 			XP Needed Per Level: <input type="text" id="xpPerLevel" value=400 /><br />
@@ -75,9 +36,52 @@
 			Only sell duplicates: <input type="checkbox" id="onlySellDuplicates"><br />
 			Desired type of card: <input type="radio" name="desiredCardType" value=0 checked>Random<input type="radio" name="desiredCardType" value=1>Ability<input type="radio" name="desiredCardType" value=2>Augment<input type="radio" name="desiredCardType" value=3>Blueprint<input type="radio" name="desiredCardType" value=4>Monster<br />
 		</div>
-		<button id="run" onclick="runSims()">Run</button>
 	</div>
-	<div id="results">Result:
+	<div id="CardsTab" class="tabcontent">
+		<div id="costSettingsContainer">
+			<table id="cardSettingsTable">
+				<tr>
+					<th></th><th>Card Cost</th><th>Card Refund</th><th>XP Value</th>
+				</tr>
+				<!--<tr>
+					<td>Characters:</td>
+					<td><input type="text" id="characterCardCost" value=2000 /></td>
+					<td><input type="text" id="characterCardRefund" value=200 /></td>
+				</tr>-->
+				<tbody id="cardSettingsAbilityRow">
+					<td>Abilities</td>
+					<!--<td><input type="text" id="abilityCardCost" value=500 /></td>
+					<td><input type="text" id="abilityCardRefund" value=100 /></td>
+					<td><input type="text" id="abilityCardXP" value=100 /></td>-->
+				</tbody>
+				<tbody id="cardSettingsBlueprintRow">
+					<td>Blueprints</td>
+					<!--<td><input type="text" id="blueprintCardCost" value=500 /></td>
+					<td><input type="text" id="blueprintCardRefund" value=100 /></td>
+					<td><input type="text" id="blueprintCardXP" value=50 /></td>-->
+				</tbody>
+				<tbody id="cardSettingsAugmentRow">
+					<td>Augments</td>
+					<!--<td><input type="text" id="augmentCardCost" value=100 /></td>
+					<td><input type="text" id="augmentCardRefund" value=10 /></td>-->
+				</tbody>
+				<tbody id="cardSettingsMonsterRow">
+					<td>Monsters</td>
+					<!--<td><input type="text" id="monsterCardCost" value=200 /></td>
+					<td><input type="text" id="monsterCardRefund" value=25 /></td>-->
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div id="ResultsTab" class="tabcontent">
+		<div id="results">Result:
 		<div id="result"></div>
 	</div>
+	</div>
+
+	<button id="run" onclick="runSims()">Run</button>
+
+<script src="js/cardData.js"></script>
+<script src="js/tabs.js"></script>
+<script src="js/sim.js"></script>
 </html>

@@ -1,0 +1,2 @@
+- show whole collection so we can modify values per-card
+- save settings and collection data to your browser (LocalStorage??)
