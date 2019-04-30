@@ -1,2 +1,3 @@
-- show whole collection so we can modify values per-card
-- save settings and collection data to your browser (LocalStorage??)
+- add more to the results pane?
+- add some sort of mass-edit functionality to the card browser
+- show cards by characters? use colors for this maybe?
