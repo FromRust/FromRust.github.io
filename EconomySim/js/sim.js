@@ -74,6 +74,28 @@ function gatherData() {
   }
 
   xpPerLevel = getFormValue("xpPerLevel");
+
+  // save data to local storage
+  saveData();
+}
+
+function saveData()
+{
+  window.localStorage.setItem('fromRustDevCollection', JSON.stringify(cardData));
+
+  var settingsObj = {};
+  settingsObj["missionSuccessPercent"] = missionSuccessPercent;
+  settingsObj["numCardsOnMissionSuccess"] = numCardsOnMissionSuccess;
+  settingsObj["missionSuccessCrowns"] = missionSuccessCrowns;
+  settingsObj["missionFailureCrowns"] = missionFailureCrowns;
+  settingsObj["sellCards"] = sellCards;
+  settingsObj["buyCards"] = buyCards;
+  settingsObj["onlySellDuplicates"] = onlySellDuplicates;
+  settingsObj["desiredCardType"] = desiredCardType;
+  settingsObj["desiredTarget"] = desiredTarget;
+  settingsObj["xpPerLevel"] = xpPerLevel;
+
+  window.localStorage.setItem('fromRustDevSettings', JSON.stringify(settingsObj));
 }
 
 function runSims() {
@@ -104,14 +126,14 @@ function runSims() {
       // if we didn't get the card we want, let's see if we can buy it here
       if(!stopCondition)
       {
-        if(desiredTarget == 1 && totalCrowns >= getCost(desiredCard.type, desiredCard.id))
+        if(desiredTarget == 0 && totalCrowns >= getCost(desiredCard.type, desiredCard.id))
         {
           // we can! we are done
           stopCondition = true;
         }
 
         // for desiredTarget 2, we should try to buy a card we don't have yet
-        if(desiredTarget == 2 && buyCards)
+        if(desiredTarget == 1 && buyCards)
         {
           tryBuyCardForXP(1);
           stopCondition = checkStopCondition();
@@ -193,7 +215,7 @@ function runSingleSim() {
   if(checkStopCondition()) { return true; }
 
   // if we aren't, try selling cards!
-  if(desiredTarget == 1 && sellCards)
+  if(desiredTarget == 0 && sellCards)
   {
     trySellCards();
   }
@@ -203,14 +225,14 @@ function runSingleSim() {
 
 function checkStopCondition()
 {
-  if(desiredTarget == 1)
+  if(desiredTarget == 0)
   {
     if(cardCollection[desiredCard.type] == null) { return false; }
     if(cardCollection[desiredCard.type][desiredCard.id] == null) { return false; }
     return (cardCollection[desiredCard.type][desiredCard.id].numOwned > 0);
   }
 
-  if(desiredTarget == 2)
+  if(desiredTarget == 1)
   {
     // for this test, we're just going until we have lvl 2 on Lucky Jack
     return calculateLevel(1) >= 1;
@@ -395,3 +417,45 @@ function trySellCards()
     } 
   }
 }
+
+// after everything is loaded, see if we can load up existing settings data
+function tryLoadData()
+{
+  var localCardData = window.localStorage.getItem('fromRustDevCollection');
+  if(localCardData != null)
+  {
+    // well then
+    cardData = JSON.parse(localCardData);
+
+    var settingsObj = JSON.parse(window.localStorage.getItem('fromRustDevSettings'));
+    if(settingsObj != null)
+    {
+      missionSuccessPercent = settingsObj["missionSuccessPercent"];
+      document.getElementById("missionSuccessPercent").value = missionSuccessPercent;
+      numCardsOnMissionSuccess = settingsObj["numCardsOnMissionSuccess"];
+      document.getElementById("missionSuccessCards").value = numCardsOnMissionSuccess;
+      missionSuccessCrowns = settingsObj["missionSuccessCrowns"];
+      document.getElementById("missionSuccessCrowns").value = missionSuccessCrowns;
+      sellCards = settingsObj["sellCards"];
+      document.getElementById("sellCards").checked = sellCards;
+      buyCards = settingsObj["buyCards"];
+      document.getElementById("buyCards").checked = buyCards;
+      onlySellDuplicates = settingsObj["onlySellDuplicates"];
+      document.getElementById("onlySellDuplicates").checked = onlySellDuplicates;
+      desiredCardType = settingsObj["desiredCardType"];
+      // ugh
+      var desiredCardTypeStrArray = ["desiredCardTypeRandom", "desiredCardTypeAbility", "desiredCardTypeAugment", "desiredCardTypeBlueprint", "desiredCardTypeMonster"];
+      document.getElementById(desiredCardTypeStrArray[desiredCardType]).checked = true;
+      desiredTarget = settingsObj["desiredTarget"];
+      // UGH
+      var desiredTargetStrArray = ["desiredTargetCard", "desiredTargetLevel"];
+      xpPerLevel = settingsObj["xpPerLevel"];
+      document.getElementById(desiredTargetStrArray[desiredTarget]).checked = true;
+      document.getElementById("xpPerLevel").value = xpPerLevel;
+    }
+  }
+
+  populateCardSettings();
+}
+
+tryLoadData();

@@ -188,4 +188,4 @@ function populateCardSettings()
 	}
 }
 
-populateCardSettings();
+//populateCardSettings();
