@@ -126,6 +126,11 @@ function getRefund(type, id)
   return cardData[type][id].refund;
 }
 
+function getName(type, id)
+{
+	return cardData[type][id].name;
+}
+
 // populate the card settings tab using cardData so that i only have to put new cards in one spot
 // also so i don't have to type so damn much
 function populateCardSettings()
@@ -134,6 +139,11 @@ function populateCardSettings()
 	var blueprintRow = document.getElementById("cardSettingsBlueprintRow");
 	var augmentRow = document.getElementById("cardSettingsAugmentRow");
 	var monsterRow = document.getElementById("cardSettingsMonsterRow");
+
+	while(abilityRow.hasChildNodes()) { abilityRow.removeChild(abilityRow.lastChild); }
+	while(blueprintRow.hasChildNodes()) { blueprintRow.removeChild(blueprintRow.lastChild); }
+	while(augmentRow.hasChildNodes()) { augmentRow.removeChild(augmentRow.lastChild); }
+	while(monsterRow.hasChildNodes()) { monsterRow.removeChild(monsterRow.lastChild); }
 
 	for(var x = 0; x < totalCardsInPool; x++)
 	{

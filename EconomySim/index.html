@@ -48,33 +48,38 @@
 					<td><input type="text" id="characterCardCost" value=2000 /></td>
 					<td><input type="text" id="characterCardRefund" value=200 /></td>
 				</tr>-->
-				<tbody id="cardSettingsAbilityRow">
-					<td>Abilities</td>
-					<!--<td><input type="text" id="abilityCardCost" value=500 /></td>
-					<td><input type="text" id="abilityCardRefund" value=100 /></td>
-					<td><input type="text" id="abilityCardXP" value=100 /></td>-->
+				<tbody id="cardSettingsAllAbilityRow">
+					<td><button onclick="setAllAbilities();">Set All Abilities</button></td>
+					<td><input type="text" id="allAbilityCost" value=0 /></td>
+					<td><input type="text" id="allAbilityRefund" value=0 /></td>
+					<td><input type="text" id="allAbilityXP" value=0 /></td>
 				</tbody>
-				<tbody id="cardSettingsBlueprintRow">
-					<td>Blueprints</td>
-					<!--<td><input type="text" id="blueprintCardCost" value=500 /></td>
-					<td><input type="text" id="blueprintCardRefund" value=100 /></td>
-					<td><input type="text" id="blueprintCardXP" value=50 /></td>-->
+				<tbody id="cardSettingsAbilityRow"></tbody>
+				<tbody id="cardSettingsAllBlueprintRow">
+					<td><button onclick="setAllBlueprints();">Set All Blueprints</button></td>
+					<td><input type="text" id="allBlueprintCost" value=0 /></td>
+					<td><input type="text" id="allBlueprintRefund" value=0 /></td>
+					<td><input type="text" id="allBlueprintXP" value=0 /></td>
 				</tbody>
-				<tbody id="cardSettingsAugmentRow">
-					<td>Augments</td>
-					<!--<td><input type="text" id="augmentCardCost" value=100 /></td>
-					<td><input type="text" id="augmentCardRefund" value=10 /></td>-->
+				<tbody id="cardSettingsBlueprintRow"></tbody>
+				<tbody id="cardSettingsAllAugmentRow">
+					<td><button onclick="setAllAugments();">Set All Augments</button></td>
+					<td><input type="text" id="allAugmentCost" value=0 /></td>
+					<td><input type="text" id="allAugmentRefund" value=0 /></td>
+					<td><input type="text" id="allAugmentXP" value=0 /></td>
 				</tbody>
-				<tbody id="cardSettingsMonsterRow">
-					<td>Monsters</td>
-					<!--<td><input type="text" id="monsterCardCost" value=200 /></td>
-					<td><input type="text" id="monsterCardRefund" value=25 /></td>-->
+				<tbody id="cardSettingsAugmentRow"></tbody>
+				<tbody id="cardSettingsAllMonsterRow">
+					<td><button onclick="setAllMonsters();">Set All Monsters</button></td>
+					<td><input type="text" id="allMonsterCost" value=0 /></td>
+					<td><input type="text" id="allMonsterRefund" value=0 /></td>
+					<td><input type="text" id="allMonsterXP" value=0 /></td>
 				</tbody>
+				<tbody id="cardSettingsMonsterRow"></tbody>
 			</table>
 		</div>
 	</div>
 	<div id="ResultsTab" class="tabcontent">
-		<div id="results">Result:
 		<div id="result"></div>
 	</div>
 	</div>

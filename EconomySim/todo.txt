@@ -1,3 +1,5 @@
 - add more to the results pane?
-- add some sort of mass-edit functionality to the card browser
+--- added some, but need more on this
 - show cards by characters? use colors for this maybe?
+- for Level Up mode, randomly pick between characters
+- add the rest of the monster cards

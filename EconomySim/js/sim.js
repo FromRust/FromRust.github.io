@@ -79,6 +79,74 @@ function gatherData() {
   saveData();
 }
 
+function setAllAbilities()
+{
+  var abilityCost = getFormValue("allAbilityCost");
+  var abilityRefund = getFormValue("allAbilityRefund");
+  var abilityXP = getFormValue("allAbilityXP");
+
+  for(var ability of Object.values(cardData[1]))
+  {
+    ability.cost = abilityCost;
+    ability.refund = abilityRefund;
+    ability.xp = abilityXP;
+  }
+
+  populateCardSettings();
+  saveData();
+}
+
+function setAllBlueprints()
+{
+  var blueprintCost = getFormValue("allBlueprintCost");
+  var blueprintRefund = getFormValue("allBlueprintRefund");
+  var blueprintXP = getFormValue("allBlueprintXP");
+
+  for(var blueprint of Object.values(cardData[3]))
+  {
+    blueprint.cost = blueprintCost;
+    blueprint.refund = blueprintRefund;
+    blueprint.xp = blueprintXP;
+  }
+
+  populateCardSettings();
+  saveData();
+}
+
+function setAllAugments()
+{
+  var augmentsCost = getFormValue("allAugmentCost");
+  var augmentsRefund = getFormValue("allAugmentRefund");
+  var augmentsXP = getFormValue("allAugmentXP");
+
+  for(var augment of Object.values(cardData[2]))
+  {
+    augment.cost = augmentsCost;
+    augment.refund = augmentsRefund;
+    augment.xp = augmentsXP;
+  }
+
+  populateCardSettings();
+  saveData();
+}
+
+function setAllMonsters()
+{
+  var monsterCost = getFormValue("allMonsterCost");
+  var monsterRefund = getFormValue("allMonsterRefund");
+  var monsterXP = getFormValue("allMonsterXP");
+
+  for(var monster of Object.values(cardData[4]))
+  {
+    monster.cost = monsterCost;
+    monster.refund = monsterRefund;
+    monster.xp = monsterXP;
+  }
+
+  populateCardSettings();
+  saveData();
+}
+
 function saveData()
 {
   window.localStorage.setItem('fromRustDevCollection', JSON.stringify(cardData));
@@ -132,7 +200,7 @@ function runSims() {
           stopCondition = true;
         }
 
-        // for desiredTarget 2, we should try to buy a card we don't have yet
+        // for desiredTarget 1, we should try to buy a card we don't have yet
         if(desiredTarget == 1 && buyCards)
         {
           tryBuyCardForXP(1);
@@ -172,8 +240,35 @@ function resetCardCollection()
 
 function displayResults()
 {
-  var innerHTMLString = "";
+  var innerHTMLString = "Sim goal: ";
+  if(desiredTarget == 0)
+  {
+    innerHTMLString += "Obtain a specific card.<br />";
+  }
+  else if(desiredTarget == 1)
+  {
+    innerHTMLString += "Level from 1 to 2.<br />";
+  }
+  
   innerHTMLString += "Average missions ran: " + getAvgMissions() + "<br />";
+  innerHTMLString += "-- SAMPLE DATA (FINAL ITERATION) -- <br />";
+  if(desiredTarget == 0)
+  {
+    innerHTMLString += "Desired card: " + getName(desiredCard.type, desiredCard.id) + "<br />";
+  }
+
+  innerHTMLString += "Total crowns: " + totalCrowns + "<br />";
+
+  innerHTMLString += "Card collection: <br />";
+  for(var type of Object.keys(cardCollection))
+  {
+    console.log(type);
+    for(var id of Object.keys(cardCollection[type]))
+    {
+      innerHTMLString += getName(type, id) + ": " + cardCollection[type][id].numOwned + " || ";
+    }
+  }
+
   document.getElementById("result").innerHTML = innerHTMLString;
 
   document.getElementById("resultsTab").click();
