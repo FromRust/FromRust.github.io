@@ -72,11 +72,18 @@ cardData[3][24] = { cost: 100, refund: 10, xp: 50, character: 4, name: "Equalize
 
 //monsters
 //TBD - don't need these yet
-cardData[4][1] = { cost: 50, refund: 10, xp: 0, name: "TestMonsterCard1", type: 5 };
-cardData[4][2] = { cost: 50, refund: 10, xp: 0, name: "TestMonsterCard2", type: 5 };
-cardData[4][3] = { cost: 50, refund: 10, xp: 0, name: "TestMonsterCard3", type: 5 };
-cardData[4][4] = { cost: 50, refund: 10, xp: 0, name: "TestMonsterCard4", type: 5 };
-cardData[4][5] = { cost: 50, refund: 10, xp: 0, name: "TestMonsterCard5", type: 5 };
+cardData[4][1] = { cost: 50, refund: 10, xp: 0, name: "Flit", type: 5 };
+cardData[4][2] = { cost: 50, refund: 10, xp: 0, name: "Scrapper", type: 5 };
+cardData[4][3] = { cost: 50, refund: 10, xp: 0, name: "Scav Party", type: 5 };
+cardData[4][4] = { cost: 50, refund: 10, xp: 0, name: "Crackler", type: 5 };
+cardData[4][5] = { cost: 50, refund: 10, xp: 0, name: "Behemoth", type: 5 };
+cardData[4][6] = { cost: 50, refund: 10, xp: 0, name: "Claw Worm", type: 5 };
+cardData[4][7] = { cost: 50, refund: 10, xp: 0, name: "Booby-Trapped Weather Sensor", type: 5 };
+cardData[4][8] = { cost: 50, refund: 10, xp: 0, name: "Sand Skimmer", type: 5 };
+cardData[4][9] = { cost: 50, refund: 10, xp: 0, name: "Land Mine", type: 5 };
+cardData[4][10] = { cost: 50, refund: 10, xp: 0, name: "Scav Diviner", type: 5 };
+cardData[4][11] = { cost: 50, refund: 10, xp: 0, name: "Camel", type: 5 };
+cardData[4][12] = { cost: 50, refund: 10, xp: 0, name: "Shrapnel Whirlwind", type: 5 };
 
 // this is a real hacky way to create a static lookup table so we can do things like
 // "give me a random card from the entire pool"
