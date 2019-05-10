@@ -1,4 +1,4 @@
-var version = 2;
+var version = 3;
 // card data
 // structure: {id (XYZ): { name: "xyz", type: XYZ }}
 var cardData = {};
