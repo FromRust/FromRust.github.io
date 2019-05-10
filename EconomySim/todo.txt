@@ -5,4 +5,3 @@
 --- also, specify a level target
 - drop rate - pick a type then tier then among the tier
 - flag cards as not droppable and/or not purchaseable
-- (maybe) figure out a way to do version control w/ the local storage data

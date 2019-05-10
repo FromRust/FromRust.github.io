@@ -13,6 +13,7 @@ var buyCards = false;
 var onlySellDuplicates = false;
 var desiredCardType = 0;
 var desiredTarget = 0;
+var desiredLevelingCharacter = 1; // defaults to lucky jack
 
 // settings - reward data
 var numCardsOnMissionSuccess = 1;
@@ -22,7 +23,7 @@ var missionFailureCrowns = 0;
 // sim results data
 var totalMissions = 0;
 var totalMissionsWon = 0;
-var totalArray = [];
+var totalArray = {};
 var totalCrowns = 0;
 
 // aggregates for convenient lookup later
@@ -173,10 +174,15 @@ function saveData()
 }
 
 function runSims() {
-  totalArray = [];
-
   // gather data from form
   gatherData();
+
+  // prep total array var depending on sim type
+  totalArray = [];
+  if(desiredTarget == 1)
+  {
+    totalArray = {1: [0], 2: [0], 3: [0], 4: [0]};
+  }
 
   for(var s = 0; s < numSims; s++)
   {
@@ -192,6 +198,7 @@ function runSims() {
 
     // decide which card we want
     desiredCard = selectRandomCard(desiredCardType);
+    desiredLevelingCharacter = selectRandomCharacter();
 
     // run the missions
     for(var x = 0; (x < safetyCheck) && !stopCondition; x++)
@@ -209,7 +216,7 @@ function runSims() {
         // for desiredTarget 1, we should try to buy a card we don't have yet
         if(desiredTarget == 1 && buyCards)
         {
-          tryBuyCardForXP(1);
+          tryBuyCardForXP(desiredLevelingCharacter);
           stopCondition = checkStopCondition();
         }
       }
@@ -221,11 +228,25 @@ function runSims() {
       // we hit our actual condition instead of a safety check, so
       // count this sim
       // not sure what to do with safety check sims but we'll figure that out later
-      totalArray.push(totalMissions);
+      if(desiredTarget == 0)
+      {
+        totalArray.push(totalMissions);
+      }
+      else
+      {
+        totalArray[desiredLevelingCharacter].push(totalMissions);
+      }
     }
     else
     {
-      totalArray.push(safetyCheck);
+      if(desiredTarget == 0)
+      {
+        totalArray.push(safetyCheck);
+      }
+      else
+      {
+        totalArray[desiredLevelingCharacter].push(safetyCheck);
+      }
     }
   }
 
@@ -282,14 +303,41 @@ function displayResults()
 
 function getAvgMissions()
 {
-  var total = 0;
-  for(var x = 0; x < totalArray.length; x++)
+  if(desiredTarget == 0)
   {
-    total += totalArray[x];
-  }
+    var total = 0;
+    for(var x = 0; x < totalArray.length; x++)
+    {
+      total += totalArray[x];
+    }
 
-  total /= numSims;
-  return total;
+    total /= numSims;
+    return total;
+  }
+  else
+  {
+    var totalString = "<br />";
+    for(var character of Object.keys(totalArray))
+    {
+      if(character == 1) { totalString += "LUCKY JACK: "; }
+      else if(character == 2) { totalString += "BUSTER: "; }
+      else if(character == 3) { totalString += "ANDREA: "; }
+      else if(character == 4) { totalString += "LENA: "; }
+
+      var total = 0;
+      for(var y = 0; y < totalArray[character].length; y++)
+      {
+        total += totalArray[character][y];
+      }
+
+      total /= numSims;
+
+      totalString += total + "<br />";
+    }
+
+    return totalString;
+  }
+  
 }
 
 function runSingleSim() {  
@@ -335,8 +383,7 @@ function checkStopCondition()
 
   if(desiredTarget == 1)
   {
-    // for this test, we're just going until we have lvl 2 on Lucky Jack
-    return calculateLevel(1) >= 1;
+    return calculateLevel(desiredLevelingCharacter) >= 1;
   }
   
   return false;
@@ -372,6 +419,11 @@ function selectRandomCard(type)
   }
 
   return card;
+}
+
+function selectRandomCharacter()
+{
+  return Math.floor(Math.random() * characterList.length) + 1;
 }
 
 function getCard(cardType, cardId)

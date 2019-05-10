@@ -1,4 +1,6 @@
 var version = 3;
+// character list
+var characterList = [1, 2, 3, 4];
 // card data
 // structure: {id (XYZ): { name: "xyz", type: XYZ }}
 var cardData = {};
