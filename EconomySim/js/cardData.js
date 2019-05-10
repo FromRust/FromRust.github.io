@@ -1,3 +1,4 @@
+var version = 2;
 // card data
 // structure: {id (XYZ): { name: "xyz", type: XYZ }}
 var cardData = {};
@@ -201,8 +202,12 @@ function populateCardSettings()
 		newInput.setAttribute("id", "cardXP" + (x+1));
 		newInput.value = cardData[type][id].xp;
 		newCell = newRow.insertCell(3);
-		newCell.appendChild(newInput);		
+		newCell.appendChild(newInput);
 	}
 }
 
-//populateCardSettings();
+function resetSettings()
+{
+	window.localStorage.setItem('fromRustDevSettings', '');
+	window.localStorage.setItem('fromRustDevCollection', '');
+}

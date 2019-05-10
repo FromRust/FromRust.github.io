@@ -1,5 +1,8 @@
 // setting up global vars
 
+// settings - leveling settings
+var xpPerLevel = 400;
+
 // settings - sim globals
 var numSims = 10000;
 var missionSuccessPercent = 50;
@@ -149,6 +152,8 @@ function setAllMonsters()
 
 function saveData()
 {
+  resetSettings();
+
   window.localStorage.setItem('fromRustDevCollection', JSON.stringify(cardData));
 
   var settingsObj = {};
@@ -164,6 +169,7 @@ function saveData()
   settingsObj["xpPerLevel"] = xpPerLevel;
 
   window.localStorage.setItem('fromRustDevSettings', JSON.stringify(settingsObj));
+  window.localStorage.setItem('fromRustDevVersion', version);
 }
 
 function runSims() {
@@ -517,42 +523,50 @@ function trySellCards()
 function tryLoadData()
 {
   var localCardData = window.localStorage.getItem('fromRustDevCollection');
-  if(localCardData != null)
+  var localSettingsVersion = window.localStorage.getItem('fromRustDevVersion');
+  var localSettings = window.localStorage.getItem('fromRustDevSettings');
+
+  resetSettings();
+
+  if(localCardData != null && localCardData != '' && localSettings != null && localSettings != '' && localSettingsVersion != null && localSettingsVersion == version)
   {
     // well then
     cardData = JSON.parse(localCardData);
+    var settingsObj = JSON.parse(localSettings);
 
-    var settingsObj = JSON.parse(window.localStorage.getItem('fromRustDevSettings'));
-    if(settingsObj != null)
-    {
-      missionSuccessPercent = settingsObj["missionSuccessPercent"];
-      document.getElementById("missionSuccessPercent").value = missionSuccessPercent;
-      numCardsOnMissionSuccess = settingsObj["numCardsOnMissionSuccess"];
-      document.getElementById("missionSuccessCards").value = numCardsOnMissionSuccess;
-      missionSuccessCrowns = settingsObj["missionSuccessCrowns"];
-      document.getElementById("missionSuccessCrowns").value = missionSuccessCrowns;
-      missionFailureCrowns = settingsObj["missionFailureCrowns"];
-      document.getElementById("missionFailureCrowns").value = missionFailureCrowns;
-      sellCards = settingsObj["sellCards"];
-      document.getElementById("sellCards").checked = sellCards;
-      buyCards = settingsObj["buyCards"];
-      document.getElementById("buyCards").checked = buyCards;
-      onlySellDuplicates = settingsObj["onlySellDuplicates"];
-      document.getElementById("onlySellDuplicates").checked = onlySellDuplicates;
-      desiredCardType = settingsObj["desiredCardType"];
-      // ugh
-      var desiredCardTypeStrArray = ["desiredCardTypeRandom", "desiredCardTypeAbility", "desiredCardTypeAugment", "desiredCardTypeBlueprint", "desiredCardTypeMonster"];
-      document.getElementById(desiredCardTypeStrArray[desiredCardType]).checked = true;
-      desiredTarget = settingsObj["desiredTarget"];
-      // UGH
-      var desiredTargetStrArray = ["desiredTargetCard", "desiredTargetLevel"];
-      xpPerLevel = settingsObj["xpPerLevel"];
-      document.getElementById(desiredTargetStrArray[desiredTarget]).checked = true;
-      document.getElementById("xpPerLevel").value = xpPerLevel;
-    }
+    missionSuccessPercent = settingsObj["missionSuccessPercent"];
+    document.getElementById("missionSuccessPercent").value = missionSuccessPercent;
+    numCardsOnMissionSuccess = settingsObj["numCardsOnMissionSuccess"];
+    document.getElementById("missionSuccessCards").value = numCardsOnMissionSuccess;
+    missionSuccessCrowns = settingsObj["missionSuccessCrowns"];
+    document.getElementById("missionSuccessCrowns").value = missionSuccessCrowns;
+    missionFailureCrowns = settingsObj["missionFailureCrowns"];
+    document.getElementById("missionFailureCrowns").value = missionFailureCrowns;
+    sellCards = settingsObj["sellCards"];
+    document.getElementById("sellCards").checked = sellCards;
+    buyCards = settingsObj["buyCards"];
+    document.getElementById("buyCards").checked = buyCards;
+    onlySellDuplicates = settingsObj["onlySellDuplicates"];
+    document.getElementById("onlySellDuplicates").checked = onlySellDuplicates;
+    desiredCardType = settingsObj["desiredCardType"];
+    // ugh
+    var desiredCardTypeStrArray = ["desiredCardTypeRandom", "desiredCardTypeAbility", "desiredCardTypeAugment", "desiredCardTypeBlueprint", "desiredCardTypeMonster"];
+    document.getElementById(desiredCardTypeStrArray[desiredCardType]).checked = true;
+    desiredTarget = settingsObj["desiredTarget"];
+    // UGH
+    var desiredTargetStrArray = ["desiredTargetCard", "desiredTargetLevel"];
+    xpPerLevel = settingsObj["xpPerLevel"];
+    document.getElementById(desiredTargetStrArray[desiredTarget]).checked = true;
+    document.getElementById("xpPerLevel").value = xpPerLevel;
+
+    populateCardSettings();
+    gatherData();
   }
-
-  populateCardSettings();
+  else
+  {
+    populateCardSettings();
+    saveData();
+  }
 }
 
-tryLoadData();
+window.onload = tryLoadData;
