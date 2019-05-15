@@ -5,5 +5,9 @@ ONGOING
 
 TO-DO
 - for level up mode, specify a target level
-- drop rate - pick a type then tier then among the tier
 - flag cards as not droppable and/or not purchaseable
+- add new result panes so we can do comparisons
+- drop rate sim: sort collection by type then #
+
+REFACTOR
+- how we store card/card data - everything should just be refs to the cardData objects honestly, no more of this store-by-name crap or whatever

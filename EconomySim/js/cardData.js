@@ -1,4 +1,4 @@
-var version = 3;
+var version = 4;
 // character list
 var characterList = [1, 2, 3, 4];
 // card data
@@ -16,77 +16,79 @@ cardData[4] = {}; // monsters
 //cardData[1][3] = { name: "Andrea", type: 1 };
 //cardData[1][4] = { name: "Lena", type: 1 };
 
+// rarities: normal 1, uncommon 2, rare 3, legendary 4
+
 //abilities
-cardData[1][1] = { cost: 200, refund: 10, xp: 100, character: 1, name: "Brace for Impact", type: 2 };
-cardData[1][2] = { cost: 200, refund: 10, xp: 100, character: 1, name: "Ready for Round 2", type: 2 };
-cardData[1][3] = { cost: 200, refund: 10, xp: 100, character: 1, name: "Adrenaline Surge", type: 2 };
-cardData[1][4] = { cost: 200, refund: 10, xp: 100, character: 1, name: "Patch Yourself Up", type: 2 };
-cardData[1][5] = { cost: 200, refund: 10, xp: 100, character: 1, name: "Fight Through the Pain", type: 2 };
-cardData[1][6] = { cost: 200, refund: 10, xp: 100, character: 1, name: "Blaze of Glory", type: 2 };
-cardData[1][7] = { cost: 200, refund: 10, xp: 100, character: 2, name: "Called Shot", type: 2 };
-cardData[1][8] = { cost: 200, refund: 10, xp: 100, character: 2, name: "Overwatch", type: 2 };
-cardData[1][9] = { cost: 200, refund: 10, xp: 100, character: 2, name: "The Long Watch", type: 2 };
-cardData[1][10] = { cost: 200, refund: 10, xp: 100, character: 2, name: "Draw a Bead", type: 2 };
-cardData[1][11] = { cost: 200, refund: 10, xp: 100, character: 2, name: "Know Your Enemy", type: 2 };
-cardData[1][12] = { cost: 200, refund: 10, xp: 100, character: 2, name: "Saw You Coming", type: 2 };
-cardData[1][13] = { cost: 200, refund: 10, xp: 100, character: 3, name: "Scout Ahead", type: 2 };
-cardData[1][14] = { cost: 200, refund: 10, xp: 100, character: 3, name: "Animate Scrap", type: 2 };
-cardData[1][15] = { cost: 200, refund: 10, xp: 100, character: 3, name: "Jerry-Rig", type: 2 };
-cardData[1][16] = { cost: 200, refund: 10, xp: 100, character: 3, name: "We Have the Technology", type: 2 };
-cardData[1][17] = { cost: 200, refund: 10, xp: 100, character: 3, name: "Resourceful", type: 2 };
-cardData[1][18] = { cost: 200, refund: 10, xp: 100, character: 4, name: "Backup Singer", type: 2 };
-cardData[1][19] = { cost: 200, refund: 10, xp: 100, character: 4, name: "Tempo Shift", type: 2 };
-cardData[1][20] = { cost: 200, refund: 10, xp: 100, character: 4, name: "Up to Eleven", type: 2 };
-cardData[1][21] = { cost: 200, refund: 10, xp: 100, character: 4, name: "Soothing Melody", type: 2 };
-cardData[1][22] = { cost: 200, refund: 10, xp: 100, character: 4, name: "Presto", type: 2 };
-cardData[1][23] = { cost: 200, refund: 10, xp: 100, character: 4, name: "On a Loop", type: 2 };
+cardData[1][1] = { rarity: 1, cost: 200, refund: 10, xp: 100, character: 1, name: "Brace for Impact", type: 2 };
+cardData[1][2] = { rarity: 1, cost: 200, refund: 10, xp: 100, character: 1, name: "Ready for Round 2", type: 2 };
+cardData[1][3] = { rarity: 2, cost: 200, refund: 10, xp: 100, character: 1, name: "Adrenaline Surge", type: 2 };
+cardData[1][4] = { rarity: 2, cost: 200, refund: 10, xp: 100, character: 1, name: "Patch Yourself Up", type: 2 };
+cardData[1][5] = { rarity: 3, cost: 200, refund: 10, xp: 100, character: 1, name: "Fight Through the Pain", type: 2 };
+cardData[1][6] = { rarity: 4, cost: 200, refund: 10, xp: 100, character: 1, name: "Blaze of Glory", type: 2 };
+cardData[1][7] = { rarity: 1, cost: 200, refund: 10, xp: 100, character: 2, name: "Called Shot", type: 2 };
+cardData[1][8] = { rarity: 1, cost: 200, refund: 10, xp: 100, character: 2, name: "Overwatch", type: 2 };
+cardData[1][9] = { rarity: 2, cost: 200, refund: 10, xp: 100, character: 2, name: "The Long Watch", type: 2 };
+cardData[1][10] = { rarity: 2, cost: 200, refund: 10, xp: 100, character: 2, name: "Draw a Bead", type: 2 };
+cardData[1][11] = { rarity: 3, cost: 200, refund: 10, xp: 100, character: 2, name: "Know Your Enemy", type: 2 };
+cardData[1][12] = { rarity: 4, cost: 200, refund: 10, xp: 100, character: 2, name: "Saw You Coming", type: 2 };
+cardData[1][13] = { rarity: 1, cost: 200, refund: 10, xp: 100, character: 3, name: "Scout Ahead", type: 2 };
+cardData[1][14] = { rarity: 1, cost: 200, refund: 10, xp: 100, character: 3, name: "Animate Scrap", type: 2 };
+cardData[1][15] = { rarity: 2, cost: 200, refund: 10, xp: 100, character: 3, name: "Jerry-Rig", type: 2 };
+cardData[1][16] = { rarity: 2, cost: 200, refund: 10, xp: 100, character: 3, name: "We Have the Technology", type: 2 };
+cardData[1][17] = { rarity: 3, cost: 200, refund: 10, xp: 100, character: 3, name: "Resourceful", type: 2 };
+cardData[1][18] = { rarity: 1, cost: 200, refund: 10, xp: 100, character: 4, name: "Backup Singer", type: 2 };
+cardData[1][19] = { rarity: 1, cost: 200, refund: 10, xp: 100, character: 4, name: "Tempo Shift", type: 2 };
+cardData[1][20] = { rarity: 2, cost: 200, refund: 10, xp: 100, character: 4, name: "Up to Eleven", type: 2 };
+cardData[1][21] = { rarity: 2, cost: 200, refund: 10, xp: 100, character: 4, name: "Soothing Melody", type: 2 };
+cardData[1][22] = { rarity: 3, cost: 200, refund: 10, xp: 100, character: 4, name: "Presto", type: 2 };
+cardData[1][23] = { rarity: 4, cost: 200, refund: 10, xp: 100, character: 4, name: "On a Loop", type: 2 };
 
 //augments
-cardData[2][1] = { cost: 50, refund: 10, xp: 0, name: "+1 CP", type: 3 };
-cardData[2][2] = { cost: 50, refund: 10, xp: 0, name: "+2 CP", type: 3 };
-cardData[2][3] = { cost: 50, refund: 10, xp: 0, name: "+1 EP", type: 3 };
-cardData[2][4] = { cost: 50, refund: 10, xp: 0, name: "+2 EP", type: 3 };
+cardData[2][1] = { rarity: 1, cost: 50, refund: 10, xp: 0, name: "+1 CP", type: 3 };
+cardData[2][2] = { rarity: 2, cost: 50, refund: 10, xp: 0, name: "+2 CP", type: 3 };
+cardData[2][3] = { rarity: 3, cost: 50, refund: 10, xp: 0, name: "+1 EP", type: 3 };
+cardData[2][4] = { rarity: 4, cost: 50, refund: 10, xp: 0, name: "+2 EP", type: 3 };
 
 //blueprints
-cardData[3][1] = { cost: 100, refund: 10, xp: 50, character: 1, name: "Magnetic Coils", type: 4 };
-cardData[3][2] = { cost: 100, refund: 10, xp: 50, character: 1, name: "Legs-O-Skeleton", type: 4 };
-cardData[3][3] = { cost: 100, refund: 10, xp: 50, character: 1, name: "Homebrew Stims", type: 4 };
-cardData[3][4] = { cost: 100, refund: 10, xp: 50, character: 1, name: "Auto-Injector", type: 4 };
-cardData[3][5] = { cost: 100, refund: 10, xp: 50, character: 1, name: "Trophy Bag", type: 4 };
-cardData[3][6] = { cost: 100, refund: 10, xp: 50, character: 1, name: "Biohazard Suit", type: 4 };
-cardData[3][7] = { cost: 100, refund: 10, xp: 50, character: 1, name: "Laced Syringes", type: 4 };
-cardData[3][8] = { cost: 100, refund: 10, xp: 50, character: 2, name: "Scope", type: 4 };
-cardData[3][9] = { cost: 100, refund: 10, xp: 50, character: 2, name: "Chameleon Suit", type: 4 };
-cardData[3][10] = { cost: 100, refund: 10, xp: 50, character: 2, name: "Laser Assisted Aim", type: 4 };
-cardData[3][11] = { cost: 100, refund: 10, xp: 50, character: 2, name: "Radioactive Ammo", type: 4 };
-cardData[3][12] = { cost: 100, refund: 10, xp: 50, character: 2, name: "Explosive Shells", type: 4 };
-cardData[3][13] = { cost: 100, refund: 10, xp: 50, character: 3, name: "Build-a-Bomb Kit", type: 4 };
-cardData[3][14] = { cost: 100, refund: 10, xp: 50, character: 3, name: "Moon Boots", type: 4 };
-cardData[3][15] = { cost: 100, refund: 10, xp: 50, character: 3, name: "Rechargable Power Core", type: 4 };
-cardData[3][16] = { cost: 100, refund: 10, xp: 50, character: 3, name: "Shorter Fuses", type: 4 };
-cardData[3][17] = { cost: 100, refund: 10, xp: 50, character: 3, name: "Supply Drone", type: 4 };
-cardData[3][18] = { cost: 100, refund: 10, xp: 50, character: 3, name: "Hotwired Gear", type: 4 };
-cardData[3][19] = { cost: 100, refund: 10, xp: 50, character: 4, name: "Treble Amplifier", type: 4 };
-cardData[3][20] = { cost: 100, refund: 10, xp: 50, character: 4, name: "Stereo Microphone", type: 4 };
-cardData[3][21] = { cost: 100, refund: 10, xp: 50, character: 4, name: "Echo Shielding", type: 4 };
-cardData[3][22] = { cost: 100, refund: 10, xp: 50, character: 4, name: "Microphone Bolas", type: 4 };
-cardData[3][23] = { cost: 100, refund: 10, xp: 50, character: 4, name: "Polysynth Soundtable", type: 4 };
-cardData[3][24] = { cost: 100, refund: 10, xp: 50, character: 4, name: "Equalizer", type: 4 };
+cardData[3][1] = { rarity: 1, cost: 100, refund: 10, xp: 50, character: 1, name: "Magnetic Coils", type: 4 };
+cardData[3][2] = { rarity: 1, cost: 100, refund: 10, xp: 50, character: 1, name: "Legs-O-Skeleton", type: 4 };
+cardData[3][3] = { rarity: 2, cost: 100, refund: 10, xp: 50, character: 1, name: "Homebrew Stims", type: 4 };
+cardData[3][4] = { rarity: 2, cost: 100, refund: 10, xp: 50, character: 1, name: "Auto-Injector", type: 4 };
+cardData[3][5] = { rarity: 3, cost: 100, refund: 10, xp: 50, character: 1, name: "Trophy Bag", type: 4 };
+cardData[3][6] = { rarity: 3, cost: 100, refund: 10, xp: 50, character: 1, name: "Biohazard Suit", type: 4 };
+cardData[3][7] = { rarity: 4, cost: 100, refund: 10, xp: 50, character: 1, name: "Laced Syringes", type: 4 };
+cardData[3][8] = { rarity: 1, cost: 100, refund: 10, xp: 50, character: 2, name: "Scope", type: 4 };
+cardData[3][9] = { rarity: 1, cost: 100, refund: 10, xp: 50, character: 2, name: "Chameleon Suit", type: 4 };
+cardData[3][10] = { rarity: 2, cost: 100, refund: 10, xp: 50, character: 2, name: "Laser Assisted Aim", type: 4 };
+cardData[3][11] = { rarity: 2, cost: 100, refund: 10, xp: 50, character: 2, name: "Radioactive Ammo", type: 4 };
+cardData[3][12] = { rarity: 3, cost: 100, refund: 10, xp: 50, character: 2, name: "Explosive Shells", type: 4 };
+cardData[3][13] = { rarity: 1, cost: 100, refund: 10, xp: 50, character: 3, name: "Build-a-Bomb Kit", type: 4 };
+cardData[3][14] = { rarity: 1, cost: 100, refund: 10, xp: 50, character: 3, name: "Moon Boots", type: 4 };
+cardData[3][15] = { rarity: 2, cost: 100, refund: 10, xp: 50, character: 3, name: "Rechargable Power Core", type: 4 };
+cardData[3][16] = { rarity: 2, cost: 100, refund: 10, xp: 50, character: 3, name: "Shorter Fuses", type: 4 };
+cardData[3][17] = { rarity: 3, cost: 100, refund: 10, xp: 50, character: 3, name: "Supply Drone", type: 4 };
+cardData[3][18] = { rarity: 4, cost: 100, refund: 10, xp: 50, character: 3, name: "Hotwired Gear", type: 4 };
+cardData[3][19] = { rarity: 1, cost: 100, refund: 10, xp: 50, character: 4, name: "Treble Amplifier", type: 4 };
+cardData[3][20] = { rarity: 1, cost: 100, refund: 10, xp: 50, character: 4, name: "Stereo Microphone", type: 4 };
+cardData[3][21] = { rarity: 2, cost: 100, refund: 10, xp: 50, character: 4, name: "Echo Shielding", type: 4 };
+cardData[3][22] = { rarity: 2, cost: 100, refund: 10, xp: 50, character: 4, name: "Microphone Bolas", type: 4 };
+cardData[3][23] = { rarity: 3, cost: 100, refund: 10, xp: 50, character: 4, name: "Polysynth Soundtable", type: 4 };
+cardData[3][24] = { rarity: 4, cost: 100, refund: 10, xp: 50, character: 4, name: "Equalizer", type: 4 };
 
 //monsters
 //TBD - don't need these yet
-cardData[4][1] = { cost: 50, refund: 10, xp: 0, name: "Flit", type: 5 };
-cardData[4][2] = { cost: 50, refund: 10, xp: 0, name: "Scrapper", type: 5 };
-cardData[4][3] = { cost: 50, refund: 10, xp: 0, name: "Scav Party", type: 5 };
-cardData[4][4] = { cost: 50, refund: 10, xp: 0, name: "Crackler", type: 5 };
-cardData[4][5] = { cost: 50, refund: 10, xp: 0, name: "Behemoth", type: 5 };
-cardData[4][6] = { cost: 50, refund: 10, xp: 0, name: "Claw Worm", type: 5 };
-cardData[4][7] = { cost: 50, refund: 10, xp: 0, name: "Booby-Trapped Weather Sensor", type: 5 };
-cardData[4][8] = { cost: 50, refund: 10, xp: 0, name: "Sand Skimmer", type: 5 };
-cardData[4][9] = { cost: 50, refund: 10, xp: 0, name: "Land Mine", type: 5 };
-cardData[4][10] = { cost: 50, refund: 10, xp: 0, name: "Scav Diviner", type: 5 };
-cardData[4][11] = { cost: 50, refund: 10, xp: 0, name: "Camel", type: 5 };
-cardData[4][12] = { cost: 50, refund: 10, xp: 0, name: "Shrapnel Whirlwind", type: 5 };
+cardData[4][1] = { rarity: 1, cost: 50, refund: 10, xp: 0, name: "Flit", type: 5 };
+cardData[4][2] = { rarity: 1, cost: 50, refund: 10, xp: 0, name: "Scrapper", type: 5 };
+cardData[4][3] = { rarity: 2, cost: 50, refund: 10, xp: 0, name: "Scav Party", type: 5 };
+cardData[4][4] = { rarity: 2, cost: 50, refund: 10, xp: 0, name: "Crackler", type: 5 };
+cardData[4][5] = { rarity: 4, cost: 50, refund: 10, xp: 0, name: "Behemoth", type: 5 };
+cardData[4][6] = { rarity: 3, cost: 50, refund: 10, xp: 0, name: "Claw Worm", type: 5 };
+cardData[4][7] = { rarity: 3, cost: 50, refund: 10, xp: 0, name: "Booby-Trapped Weather Sensor", type: 5 };
+cardData[4][8] = { rarity: 1, cost: 50, refund: 10, xp: 0, name: "Sand Skimmer", type: 5 };
+cardData[4][9] = { rarity: 1, cost: 50, refund: 10, xp: 0, name: "Land Mine", type: 5 };
+cardData[4][10] = { rarity: 2, cost: 50, refund: 10, xp: 0, name: "Scav Diviner", type: 5 };
+cardData[4][11] = { rarity: 3, cost: 50, refund: 10, xp: 0, name: "Camel", type: 5 };
+cardData[4][12] = { rarity: 4, cost: 50, refund: 10, xp: 0, name: "Shrapnel Whirlwind", type: 5 };
 
 // this is a real hacky way to create a static lookup table so we can do things like
 // "give me a random card from the entire pool"
@@ -139,6 +141,35 @@ function getRefund(type, id)
 function getName(type, id)
 {
 	return cardData[type][id].name;
+}
+
+function getTypeAndId(name)
+{
+	var ret = {};
+	for(var x = 0; x < totalCardsInPool; x++)
+	{
+		var card = cardData[allTypes[x]][allIds[x]];
+		if(card.name == name)
+		{
+			ret.type = allTypes[x];
+			ret.id = allIds[x];
+			break;
+		}
+	}
+
+	return ret;
+}
+
+function getCardByName(name)
+{
+	for(var x = 0; x < totalCardsInPool; x++)
+	{
+		var card = cardData[allTypes[x]][allIds[x]];
+		if(card.name == name)
+		{
+			return card;
+		}
+	}
 }
 
 // populate the card settings tab using cardData so that i only have to put new cards in one spot

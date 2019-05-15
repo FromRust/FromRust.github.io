@@ -20,6 +20,32 @@ var numCardsOnMissionSuccess = 1;
 var missionSuccessCrowns = 0;
 var missionFailureCrowns = 0;
 
+// settings - drop rate data
+var dropRateNormal = 0;
+var dropRateUncommon = 0;
+var dropRateRare = 0;
+var dropRateLegendary = 0;
+var dropRateAbility = 0;
+var dropRateBlueprint = 0;
+var dropRateAugment = 0;
+var dropRateMonster = 0;
+
+// drop rate forms for recalculation
+var formDropRateNormal = Object;
+var formDropRateUncommon = Object;
+var formDropRateRare = Object;
+var formDropRateLegendary = Object;
+var formDropRateAbility = Object;
+var formDropRateBlueprint = Object;
+var formDropRateAugment = Object;
+var formDropRateMonster = Object;
+var formDropRateTotal = Object;
+var formDropRateCategoryTotal = Object;
+
+// drop rate tables for actual usage
+var dropRateTierTable = [];
+var dropRateCategoryTable = [];
+
 // sim results data
 var totalMissions = 0;
 var totalMissionsWon = 0;
@@ -60,6 +86,15 @@ function gatherData() {
   onlySellDuplicates = document.getElementById("onlySellDuplicates").checked;
   desiredCardType = document.querySelector('input[name="desiredCardType"]:checked').value;
   desiredTarget = document.querySelector('input[name="desiredTarget"]:checked').value;
+
+  dropRateNormal = getFormValue("dropRateSettingsNormal");
+  dropRateUncommon = getFormValue("dropRateSettingsUncommon");
+  dropRateRare = getFormValue("dropRateSettingsRare");
+  dropRateLegendary = getFormValue("dropRateSettingsLegendary");
+  dropRateAbility = getFormValue("dropRateSettingsAbility");
+  dropRateBlueprint = getFormValue("dropRateSettingsBlueprint");
+  dropRateAugment = getFormValue("dropRateSettingsAugment");
+  dropRateMonster = getFormValue("dropRateSettingsMonster");
 
   // cost and XP here we go
   for(var x = 0; x < totalCardsInPool; x++)
@@ -169,8 +204,63 @@ function saveData()
   settingsObj["desiredTarget"] = desiredTarget;
   settingsObj["xpPerLevel"] = xpPerLevel;
 
+  settingsObj["dropRateNormal"] = dropRateNormal;
+  settingsObj["dropRateUncommon"] = dropRateUncommon;
+  settingsObj["dropRateRare"] = dropRateRare;
+  settingsObj["dropRateLegendary"] = dropRateLegendary;
+  settingsObj["dropRateAbility"] = dropRateAbility;
+  settingsObj["dropRateBlueprint"] = dropRateBlueprint;
+  settingsObj["dropRateAugment"] = dropRateAugment;
+  settingsObj["dropRateMonster"] = dropRateMonster;
+
   window.localStorage.setItem('fromRustDevSettings', JSON.stringify(settingsObj));
   window.localStorage.setItem('fromRustDevVersion', version);
+}
+
+function prepDropRateTables()
+{
+  dropRateTierTable = [];
+  dropRateCategoryTable = [];
+
+  for(var r = 0; r < dropRateNormal; r++)
+  {
+    dropRateTierTable.push(1);
+  }
+
+  for(var r = 0; r < dropRateUncommon; r++)
+  {
+    dropRateTierTable.push(2);
+  }
+
+  for(var r = 0; r < dropRateRare; r++)
+  {
+    dropRateTierTable.push(3);
+  }
+
+  for(var r = 0; r < dropRateLegendary; r++)
+  {
+    dropRateTierTable.push(4);
+  }
+
+  for(var r = 0; r < dropRateAbility; r++)
+  {
+    dropRateCategoryTable.push(1);
+  }
+
+  for(var r = 0; r < dropRateAugment; r++)
+  {
+    dropRateCategoryTable.push(2);
+  }
+
+  for(var r = 0; r < dropRateBlueprint; r++)
+  {
+    dropRateCategoryTable.push(3);
+  }
+
+  for(var r = 0; r < dropRateMonster; r++)
+  {
+    dropRateCategoryTable.push(4);
+  }
 }
 
 function runSims() {
@@ -183,69 +273,85 @@ function runSims() {
   {
     totalArray = {1: [0], 2: [0], 3: [0], 4: [0]};
   }
-
-  for(var s = 0; s < numSims; s++)
+  else if(desiredTarget == 2)
   {
-    // for each sim, we...
-    // reset values
-    var safetyCheck = 10000; // we dont do more than this many runs
-    var stopCondition = false;
+    totalArray = {}; // we will just fill it with card names and totals
+  }
 
-    totalMissions = 0;
-    totalMissionsWon = 0;
-    totalCrowns = 0;
-    resetCardCollection();
+  // prep drop rate tables
+  prepDropRateTables();
 
-    // decide which card we want
-    desiredCard = selectRandomCard(desiredCardType);
-    desiredLevelingCharacter = selectRandomCharacter();
-
-    // run the missions
-    for(var x = 0; (x < safetyCheck) && !stopCondition; x++)
+  // if we're just doing a drop rate sim, let's do that here instead of
+  // doing the normal sim loop
+  if(desiredTarget == 2)
+  {
+    performDropRateSims();
+  }
+  else
+  {
+    for(var s = 0; s < numSims; s++)
     {
-      stopCondition = runSingleSim();
-      // if we didn't get the card we want, let's see if we can buy it here
-      if(!stopCondition)
-      {
-        if(desiredTarget == 0 && totalCrowns >= getCost(desiredCard.type, desiredCard.id))
-        {
-          // we can! we are done
-          stopCondition = true;
-        }
+      // for each sim, we...
+      // reset values
+      var safetyCheck = 10000; // we dont do more than this many runs
+      var stopCondition = false;
 
-        // for desiredTarget 1, we should try to buy a card we don't have yet
-        if(desiredTarget == 1 && buyCards)
+      totalMissions = 0;
+      totalMissionsWon = 0;
+      totalCrowns = 0;
+      resetCardCollection();
+
+      // decide which card we want
+      desiredCard = selectRandomCard(desiredCardType);
+      desiredLevelingCharacter = selectRandomCharacter();
+
+      // run the missions
+      for(var x = 0; (x < safetyCheck) && !stopCondition; x++)
+      {
+        stopCondition = runSingleSim();
+        // if we didn't get the card we want, let's see if we can buy it here
+        if(!stopCondition)
         {
-          tryBuyCardForXP(desiredLevelingCharacter);
-          stopCondition = checkStopCondition();
+          if(desiredTarget == 0 && totalCrowns >= getCost(desiredCard.type, desiredCard.id))
+          {
+            // we can! we are done
+            stopCondition = true;
+          }
+
+          // for desiredTarget 1, we should try to buy a card we don't have yet
+          if(desiredTarget == 1 && buyCards)
+          {
+            tryBuyCardForXP(desiredLevelingCharacter);
+            stopCondition = checkStopCondition();
+          }
         }
       }
-    }
 
-    var innerHTMLString = "";
-    if(stopCondition)
-    {
-      // we hit our actual condition instead of a safety check, so
-      // count this sim
-      // not sure what to do with safety check sims but we'll figure that out later
-      if(desiredTarget == 0)
+      var innerHTMLString = "";
+      if(stopCondition)
       {
-        totalArray.push(totalMissions);
+        // we hit our actual condition instead of a safety check, so
+        // count this sim
+        // not sure what to do with safety check sims but we'll figure that out later
+        if(desiredTarget == 0)
+        {
+          totalArray.push(totalMissions);
+        }
+        else
+        {
+          totalArray[desiredLevelingCharacter].push(totalMissions);
+        }
       }
       else
       {
-        totalArray[desiredLevelingCharacter].push(totalMissions);
-      }
-    }
-    else
-    {
-      if(desiredTarget == 0)
-      {
-        totalArray.push(safetyCheck);
-      }
-      else
-      {
-        totalArray[desiredLevelingCharacter].push(safetyCheck);
+        if(desiredTarget == 0)
+        {
+          totalArray.push(safetyCheck);
+        }
+        else
+        {
+          totalArray[desiredLevelingCharacter].push(safetyCheck);
+        }
       }
     }
   }
@@ -276,23 +382,59 @@ function displayResults()
   {
     innerHTMLString += "Level from 1 to 2.<br />";
   }
-  
-  innerHTMLString += "Average missions ran: " + getAvgMissions() + "<br />";
-  innerHTMLString += "-- SAMPLE DATA (FINAL ITERATION) -- <br />";
-  if(desiredTarget == 0)
+  else if(desiredTarget == 2)
   {
-    innerHTMLString += "Desired card: " + getName(desiredCard.type, desiredCard.id) + "<br />";
+    innerHTMLString += "Drop Rate Simulation.<br />";
   }
 
-  innerHTMLString += "Total crowns: " + totalCrowns + "<br />";
-
-  innerHTMLString += "Card collection: <br />";
-  for(var type of Object.keys(cardCollection))
+  if(desiredTarget == 2)
   {
-    console.log(type);
-    for(var id of Object.keys(cardCollection[type]))
+    var rawCardCollectionString = "";
+
+    var rarityTotals = [0, 0, 0, 0, 0];
+    var categoryTotals = [0, 0, 0, 0, 0];
+
+    for(var cardName of Object.keys(totalArray))
     {
-      innerHTMLString += getName(type, id) + ": " + cardCollection[type][id].numOwned + " || ";
+      var card = getCardByName(cardName);
+      rarityTotals[card.rarity] += totalArray[cardName];
+      categoryTotals[card.type - 1] += totalArray[cardName]; // TODO: that -1 is garbage and it's because of the old character card cruft.
+
+      rawCardCollectionString += card.name + ": " + totalArray[card.name] + "<br />";
+    }
+
+    innerHTMLString += "TOTALS || AVERAGES <br />";
+    innerHTMLString += "-- Normal: " + rarityTotals[1] + " || " + (rarityTotals[1] / numSims * 100) +  "% <br />";
+    innerHTMLString += "-- Uncommon: " + rarityTotals[2] + " || " + (rarityTotals[2] / numSims * 100) + "% <br />";
+    innerHTMLString += "-- Rare: " + rarityTotals[3] + " || " + (rarityTotals[3] / numSims * 100) + "% <br />";
+    innerHTMLString += "-- Legendary: " + rarityTotals[4] + " || " + (rarityTotals[4] / numSims * 100) + "% <br />";
+    innerHTMLString += "***" + "<br />";
+    innerHTMLString += "-- Ability: " + categoryTotals[1] + " || " + (categoryTotals[1] / numSims * 100) + "% <br />";
+    innerHTMLString += "-- Augment: " + categoryTotals[2] + " || " + (categoryTotals[2] / numSims * 100) + "% <br />";
+    innerHTMLString += "-- Blueprint: " + categoryTotals[3] + " || " + (categoryTotals[3] / numSims * 100) + "% <br />";
+    innerHTMLString += "-- Monster: " + categoryTotals[4] + " || " + (categoryTotals[4] / numSims * 100) + "% <br />";
+    innerHTMLString += "<br />";
+    innerHTMLString += "RAW COLLECTION DUMP: <br />";
+    innerHTMLString += rawCardCollectionString;
+  }
+  else
+  {
+    innerHTMLString += "Average missions ran: " + getAvgMissions() + "<br />";
+    innerHTMLString += "-- SAMPLE DATA (FINAL ITERATION) -- <br />";
+    if(desiredTarget == 0)
+    {
+      innerHTMLString += "Desired card: " + getName(desiredCard.type, desiredCard.id) + "<br />";
+    }
+
+    innerHTMLString += "Total crowns: " + totalCrowns + "<br />";
+
+    innerHTMLString += "Card collection: <br />";
+    for(var type of Object.keys(cardCollection))
+    {
+      for(var id of Object.keys(cardCollection[type]))
+      {
+        innerHTMLString += getName(type, id) + ": " + cardCollection[type][id].numOwned + " || ";
+      }
     }
   }
 
@@ -350,8 +492,9 @@ function runSingleSim() {
     totalCrowns += missionSuccessCrowns;
     for(var x = 0; x < numCardsOnMissionSuccess; x++)
     {
-      var card = selectRandomCard(0);
-      getCard(card.type, card.id);
+      var card = dropCard();
+      var hackyTmpCrap = getTypeAndId(card.name);
+      getCard(hackyTmpCrap.type, hackyTmpCrap.id);
     }
   }
   else
@@ -400,6 +543,157 @@ function runMission()
   return (Math.floor(Math.random() * 101) <= missionSuccessPercent);
 }
 
+function calculateDropRates()
+{
+  // the following rules apply:
+  // - must add up to 100.0
+  // - prioritize in backwards order, so if more than two need adjustment,
+  //   the higher rarity wins.
+  // let's start w/ the first category and see how it goes
+  var drValNormal = parseInt(formDropRateNormal.value);
+  var drValUncommon = parseInt(formDropRateUncommon.value);
+  var drValRare = parseInt(formDropRateRare.value);
+  var drValLegendary = parseInt(formDropRateLegendary.value);
+  var drValTotal = drValNormal + drValUncommon + drValRare + drValLegendary;
+
+  if(drValTotal > 100)
+  {
+    if(drValLegendary >= 100)
+    {
+      drValLegendary = 100;
+      drValNormal = 0;
+      drValUncommon = 0;
+      drValRare = 0;
+    }
+
+    if(drValRare >= 100)
+    {
+      drValRare = 100;
+      drValLegendary = 0;
+      drValUncommon = 0;
+      drValNormal = 0;
+    }
+
+    if(drValUncommon >= 100)
+    {
+      drValUncommon = 100;
+      drValLegendary = 0;
+      drValRare = 0;
+      drValNormal = 0;
+    }
+
+    if(drValNormal >= 100)
+    {
+      drValNormal = 100;
+      drValLegendary = 0;
+      drValRare = 0;
+      drValUncommon = 0;
+    }
+
+    // it's not, so we have to normalize. we do this by taking out of the
+    // least category possible until we are done normalizing
+    // recalc for safety
+    drValTotal = drValNormal + drValUncommon + drValRare + drValLegendary;
+    var diff = drValTotal - 100;
+    while(diff > 0)
+    {
+      if(drValNormal > 0) { drValNormal--; }
+      else if(drValUncommon > 0) { drValUncommon--; }
+      else if(drValRare > 0) { drValRare--; }
+      else if(drValLegendary > 0) { drValLegendary--; }
+      diff--;
+    }
+  }
+
+  formDropRateNormal.value = drValNormal;
+  formDropRateUncommon.value = drValUncommon;
+  formDropRateRare.value = drValRare;
+  formDropRateLegendary.value = drValLegendary;
+  drValTotal = drValNormal + drValUncommon + drValRare + drValLegendary;
+  formDropRateTotal.value = drValTotal;
+
+  // now do it all again for the card categories!
+  var drValAbility = parseInt(formDropRateAbility.value);
+  var drValBlueprint = parseInt(formDropRateBlueprint.value);
+  var drValAugment = parseInt(formDropRateAugment.value);
+  var drValMonster = parseInt(formDropRateMonster.value);
+  var drcValTotal = drValAbility + drValBlueprint + drValAugment + drValMonster;
+
+  if(drcValTotal > 100)
+  {
+    if(drValMonster >= 100)
+    {
+      drValMonster = 100;
+      drValAbility = 0;
+      drValBlueprint = 0;
+      drValAugment = 0;
+    }
+
+    if(drValAugment >= 100)
+    {
+      drValAugment = 100;
+      drValMonster = 0;
+      drValBlueprint = 0;
+      drValAbility = 0;
+    }
+
+    if(drValBlueprint >= 100)
+    {
+      drValBlueprint = 100;
+      drValMonster = 0;
+      drValAugment = 0;
+      drValAbility = 0;
+    }
+
+    if(drValAbility >= 100)
+    {
+      drValAbility = 100;
+      drValMonster = 0;
+      drValAugment = 0;
+      drValBlueprint = 0;
+    }
+
+    // it's not, so we have to normalize. we do this by taking out of the
+    // least category possible until we are done normalizing
+    // recalc for safety
+    drcValTotal = drValAbility + drValBlueprint + drValAugment + drValMonster;
+    diff = drcValTotal - 100;
+    while(diff > 0)
+    {
+      if(drValAbility > 0) { drValAbility--; }
+      else if(drValBlueprint > 0) { drValBlueprint--; }
+      else if(drValAugment > 0) { drValAugment--; }
+      else if(drValMonster > 0) { drValMonster--; }
+      diff--;
+    }
+  }
+
+  formDropRateAbility.value = drValAbility;
+  formDropRateBlueprint.value = drValBlueprint;
+  formDropRateAugment.value = drValAugment;
+  formDropRateMonster.value = drValMonster;
+  drcValTotal = drValAbility + drValBlueprint + drValAugment + drValMonster;
+  formDropRateCategoryTotal.value = drcValTotal;
+}
+
+function performDropRateSims()
+{
+  for(var s = 0; s < numSims; s++)
+  {
+    var card = dropCard();
+
+    // and add it to the totals object, or increment it if it exists
+    if(totalArray[card.name] != null)
+    {
+      totalArray[card.name]++;
+    }
+    else
+    {
+      totalArray[card.name] = 1;
+    }
+  }
+}
+
 function selectRandomCard(type)
 {
   var card = {};
@@ -424,6 +718,29 @@ function selectRandomCard(type)
 function selectRandomCharacter()
 {
   return Math.floor(Math.random() * characterList.length) + 1;
+}
+
+function dropCard()
+{
+  var index = Math.floor(Math.random() * 100);
+  var rarity = dropRateTierTable[index];
+
+  index = Math.floor(Math.random() * 100);
+  var category = dropRateCategoryTable[index];
+
+  // now, get all cards of this type and rarity
+  var simCardArray = [];
+  for(var card of Object.values(cardData[category]))
+  {
+    if(card.rarity == rarity)
+    {
+      simCardArray.push(card);
+    }
+  }
+
+  // now pick one!
+  index = Math.floor(Math.random() * simCardArray.length);
+  return simCardArray[index];
 }
 
 function getCard(cardType, cardId)
@@ -578,6 +895,20 @@ function tryLoadData()
   var localSettingsVersion = window.localStorage.getItem('fromRustDevVersion');
   var localSettings = window.localStorage.getItem('fromRustDevSettings');
 
+  // we re-use these later in our sim so we're saving them now, they have
+  // nothing to do with settings, we just only want to fire this once.
+  // TODO: clean this shit up, dan, jesus fucking christ
+  formDropRateNormal = document.getElementById("dropRateSettingsNormal");
+  formDropRateUncommon = document.getElementById("dropRateSettingsUncommon");
+  formDropRateRare = document.getElementById("dropRateSettingsRare");
+  formDropRateLegendary = document.getElementById("dropRateSettingsLegendary");
+  formDropRateAbility = document.getElementById("dropRateSettingsAbility");
+  formDropRateBlueprint = document.getElementById("dropRateSettingsBlueprint");
+  formDropRateAugment = document.getElementById("dropRateSettingsAugment");
+  formDropRateMonster = document.getElementById("dropRateSettingsMonster");
+  formDropRateTotal = document.getElementById("dropRateSettingsTotal");
+  formDropRateCategoryTotal = document.getElementById("dropRateCardCategoryTotal");
+
   resetSettings();
 
   if(localCardData != null && localCardData != '' && localSettings != null && localSettings != '' && localSettingsVersion != null && localSettingsVersion == version)
@@ -606,10 +937,29 @@ function tryLoadData()
     document.getElementById(desiredCardTypeStrArray[desiredCardType]).checked = true;
     desiredTarget = settingsObj["desiredTarget"];
     // UGH
-    var desiredTargetStrArray = ["desiredTargetCard", "desiredTargetLevel"];
+    var desiredTargetStrArray = ["desiredTargetCard", "desiredTargetLevel", "desiredTargetDropRateSim"];
     xpPerLevel = settingsObj["xpPerLevel"];
     document.getElementById(desiredTargetStrArray[desiredTarget]).checked = true;
     document.getElementById("xpPerLevel").value = xpPerLevel;
+
+    dropRateNormal = settingsObj["dropRateNormal"];
+    dropRateUncommon = settingsObj["dropRateUncommon"];
+    dropRateRare = settingsObj["dropRateRare"];
+    dropRateLegendary = settingsObj["dropRateLegendary"];
+    dropRateAbility = settingsObj["dropRateAbility"];
+    dropRateBlueprint = settingsObj["dropRateBlueprint"];
+    dropRateAugment = settingsObj["dropRateAugment"];
+    dropRateMonster = settingsObj["dropRateMonster"];
+    formDropRateNormal.value = dropRateNormal;
+    formDropRateUncommon.value = dropRateUncommon;
+    formDropRateRare.value = dropRateRare;
+    formDropRateLegendary.value = dropRateLegendary;
+    formDropRateAbility.value = dropRateAbility;
+    formDropRateBlueprint.value = dropRateBlueprint;
+    formDropRateAugment.value = dropRateAugment;
+    formDropRateMonster.value = dropRateMonster;
+    formDropRateTotal.value = dropRateNormal + dropRateUncommon + dropRateRare + dropRateLegendary;
+    formDropRateCategoryTotal.value = dropRateAbility + dropRateBlueprint + dropRateAugment + dropRateMonster;
 
     populateCardSettings();
     gatherData();

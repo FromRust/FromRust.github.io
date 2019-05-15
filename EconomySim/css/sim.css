@@ -39,3 +39,11 @@ body {
   border: 1px solid #ccc;
   border-top: none;
 }
+
+#dropRateCardCategoriesTable td input {
+	width: 75px;
+}
+
+#dropRateSettingsTable td input {
+	width: 75px;
+}
