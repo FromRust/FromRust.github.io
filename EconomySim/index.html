@@ -71,18 +71,19 @@
 		<div id="costSettingsContainer">
 			<table id="cardSettingsTable">
 				<tr>
-					<th></th><th>Card Cost</th><th>Card Refund</th><th>XP Value</th>
+					<th></th><th>Card Cost</th><th>Card Refund</th><th>XP Value</th><th>Rarity</th>
 				</tr>
-				<!--<tr>
-					<td>Characters:</td>
-					<td><input type="text" id="characterCardCost" value=2000 /></td>
-					<td><input type="text" id="characterCardRefund" value=200 /></td>
-				</tr>-->
 				<tbody id="cardSettingsAllAbilityRow">
 					<td><button onclick="setAllAbilities();">Set All Abilities</button></td>
 					<td><input type="text" id="allAbilityCost" value=0 /></td>
 					<td><input type="text" id="allAbilityRefund" value=0 /></td>
 					<td><input type="text" id="allAbilityXP" value=0 /></td>
+					<td><select id="allAbilityRarity">
+						<option value=1>Common</option>
+						<option value=2>Uncommon</option>
+						<option value=3>Rare</option>
+						<option value=4>Legendary</option>
+					</select></td>
 				</tbody>
 				<tbody id="cardSettingsAbilityRow"></tbody>
 				<tbody id="cardSettingsAllBlueprintRow">
@@ -90,6 +91,12 @@
 					<td><input type="text" id="allBlueprintCost" value=0 /></td>
 					<td><input type="text" id="allBlueprintRefund" value=0 /></td>
 					<td><input type="text" id="allBlueprintXP" value=0 /></td>
+					<td><select id="allBlueprintRarity">
+						<option value=1>Common</option>
+						<option value=2>Uncommon</option>
+						<option value=3>Rare</option>
+						<option value=4>Legendary</option>
+					</select></td>
 				</tbody>
 				<tbody id="cardSettingsBlueprintRow"></tbody>
 				<tbody id="cardSettingsAllAugmentRow">
@@ -97,6 +104,12 @@
 					<td><input type="text" id="allAugmentCost" value=0 /></td>
 					<td><input type="text" id="allAugmentRefund" value=0 /></td>
 					<td><input type="text" id="allAugmentXP" value=0 /></td>
+					<td><select id="allAugmentRarity">
+						<option value=1>Common</option>
+						<option value=2>Uncommon</option>
+						<option value=3>Rare</option>
+						<option value=4>Legendary</option>
+					</select></td>
 				</tbody>
 				<tbody id="cardSettingsAugmentRow"></tbody>
 				<tbody id="cardSettingsAllMonsterRow">
@@ -104,6 +117,12 @@
 					<td><input type="text" id="allMonsterCost" value=0 /></td>
 					<td><input type="text" id="allMonsterRefund" value=0 /></td>
 					<td><input type="text" id="allMonsterXP" value=0 /></td>
+					<td><select id="allMonsterRarity">
+						<option value=1>Common</option>
+						<option value=2>Uncommon</option>
+						<option value=3>Rare</option>
+						<option value=4>Legendary</option>
+					</select></td>
 				</tbody>
 				<tbody id="cardSettingsMonsterRow"></tbody>
 			</table>

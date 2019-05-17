@@ -8,6 +8,7 @@ TO-DO
 - flag cards as not droppable and/or not purchaseable
 - add new result panes so we can do comparisons
 - drop rate sim: sort collection by type then #
+- add rarity assignment to card screen
 
 REFACTOR
 - how we store card/card data - everything should just be refs to the cardData objects honestly, no more of this store-by-name crap or whatever

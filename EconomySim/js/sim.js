@@ -106,6 +106,9 @@ function gatherData() {
     cardData[type][id].refund = getFormValue("cardRefund" + (x+1));
     cardData[type][id].xp = getFormValue("cardXP" + (x+1));
 
+    var rElement = document.getElementById("cardRarity" + (x+1));
+    cardData[type][id].rarity = rElement.options[rElement.selectedIndex].value;
+
     if(cardData[type][id].cost < lowestCost[type])
     {
       lowestCost[type] = cardData[type][id];
@@ -124,11 +127,15 @@ function setAllAbilities()
   var abilityRefund = getFormValue("allAbilityRefund");
   var abilityXP = getFormValue("allAbilityXP");
 
+  var rElement = document.getElementById("allAbilityRarity");
+  var rarity = rElement.options[rElement.selectedIndex].value;
+
   for(var ability of Object.values(cardData[1]))
   {
     ability.cost = abilityCost;
     ability.refund = abilityRefund;
     ability.xp = abilityXP;
+    ability.rarity = rarity;
   }
 
   populateCardSettings();
@@ -141,11 +148,15 @@ function setAllBlueprints()
   var blueprintRefund = getFormValue("allBlueprintRefund");
   var blueprintXP = getFormValue("allBlueprintXP");
 
+  var rElement = document.getElementById("allBlueprintRarity");
+  var rarity = rElement.options[rElement.selectedIndex].value;
+
   for(var blueprint of Object.values(cardData[3]))
   {
     blueprint.cost = blueprintCost;
     blueprint.refund = blueprintRefund;
     blueprint.xp = blueprintXP;
+    blueprint.rarity = rarity;
   }
 
   populateCardSettings();
@@ -158,11 +169,15 @@ function setAllAugments()
   var augmentsRefund = getFormValue("allAugmentRefund");
   var augmentsXP = getFormValue("allAugmentXP");
 
+  var rElement = document.getElementById("allAugmentRarity");
+  var rarity = rElement.options[rElement.selectedIndex].value;
+
   for(var augment of Object.values(cardData[2]))
   {
     augment.cost = augmentsCost;
     augment.refund = augmentsRefund;
     augment.xp = augmentsXP;
+    augment.rarity = rarity;
   }
 
   populateCardSettings();
@@ -175,11 +190,15 @@ function setAllMonsters()
   var monsterRefund = getFormValue("allMonsterRefund");
   var monsterXP = getFormValue("allMonsterXP");
 
+  var rElement = document.getElementById("allMonsterRarity");
+  var rarity = rElement.options[rElement.selectedIndex].value;
+
   for(var monster of Object.values(cardData[4]))
   {
     monster.cost = monsterCost;
     monster.refund = monsterRefund;
     monster.xp = monsterXP;
+    monster.rarity = rarity;
   }
 
   populateCardSettings();

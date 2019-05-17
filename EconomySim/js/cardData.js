@@ -236,6 +236,30 @@ function populateCardSettings()
 		newInput.value = cardData[type][id].xp;
 		newCell = newRow.insertCell(3);
 		newCell.appendChild(newInput);
+
+		newInput = document.createElement("select");
+		newInput.setAttribute("id", "cardRarity" + (x+1));
+		// this is a pain but we have to add all the options to every select box. womp womp
+		var optCommon = document.createElement("option");
+		optCommon.value = 1;
+		optCommon.appendChild(document.createTextNode("Common"));
+		newInput.appendChild(optCommon);
+		var optUncommon = document.createElement("option");
+		optUncommon.value = 2;
+		optUncommon.appendChild(document.createTextNode("Uncommon"));
+		newInput.appendChild(optUncommon);
+		var optRare = document.createElement("option");
+		optRare.value = 3;
+		optRare.appendChild(document.createTextNode("Rare"));
+		newInput.appendChild(optRare);
+		var optLegendary = document.createElement("option");
+		optLegendary.value = 4;
+		optLegendary.appendChild(document.createTextNode("Legendary"));
+		newInput.appendChild(optLegendary);
+
+		newInput.value = cardData[type][id].rarity;
+		newCell = newRow.insertCell(4);
+		newCell.appendChild(newInput);
 	}
 }
 
