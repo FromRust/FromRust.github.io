@@ -105,6 +105,8 @@ function gatherData() {
     cardData[type][id].cost = getFormValue("cardCost" + (x+1));
     cardData[type][id].refund = getFormValue("cardRefund" + (x+1));
     cardData[type][id].xp = getFormValue("cardXP" + (x+1));
+    cardData[type][id].canPurchase = document.getElementById("cardCanPurchase" + (x+1)).checked;
+    cardData[type][id].canDrop = document.getElementById("cardCanDrop" + (x+1)).checked;
 
     var rElement = document.getElementById("cardRarity" + (x+1));
     cardData[type][id].rarity = rElement.options[rElement.selectedIndex].value;
@@ -126,6 +128,8 @@ function setAllAbilities()
   var abilityCost = getFormValue("allAbilityCost");
   var abilityRefund = getFormValue("allAbilityRefund");
   var abilityXP = getFormValue("allAbilityXP");
+  var abilityCanPurchase = document.getElementById("allAbilityCanPurchase").checked;
+  var abilityCanDrop = document.getElementById("allAbilityCanDrop").checked;
 
   var rElement = document.getElementById("allAbilityRarity");
   var rarity = rElement.options[rElement.selectedIndex].value;
@@ -136,6 +140,8 @@ function setAllAbilities()
     ability.refund = abilityRefund;
     ability.xp = abilityXP;
     ability.rarity = rarity;
+    ability.canPurchase = abilityCanPurchase;
+    ability.canDrop = abilityCanDrop;
   }
 
   populateCardSettings();
@@ -147,6 +153,8 @@ function setAllBlueprints()
   var blueprintCost = getFormValue("allBlueprintCost");
   var blueprintRefund = getFormValue("allBlueprintRefund");
   var blueprintXP = getFormValue("allBlueprintXP");
+  var blueprintCanPurchase = document.getElementById("allBlueprintCanPurchase").checked;
+  var blueprintCanDrop = document.getElementById("allBlueprintCanDrop").checked;
 
   var rElement = document.getElementById("allBlueprintRarity");
   var rarity = rElement.options[rElement.selectedIndex].value;
@@ -157,6 +165,8 @@ function setAllBlueprints()
     blueprint.refund = blueprintRefund;
     blueprint.xp = blueprintXP;
     blueprint.rarity = rarity;
+    blueprint.canPurchase = blueprintCanPurchase;
+    blueprint.canDrop = blueprintCanDrop;
   }
 
   populateCardSettings();
@@ -168,6 +178,8 @@ function setAllAugments()
   var augmentsCost = getFormValue("allAugmentCost");
   var augmentsRefund = getFormValue("allAugmentRefund");
   var augmentsXP = getFormValue("allAugmentXP");
+  var augmentsCanPurchase = document.getElementById("allAugmentCanPurchase").checked;
+  var augmentsCanDrop = document.getElementById("allAugmentCanDrop").checked;
 
   var rElement = document.getElementById("allAugmentRarity");
   var rarity = rElement.options[rElement.selectedIndex].value;
@@ -178,6 +190,8 @@ function setAllAugments()
     augment.refund = augmentsRefund;
     augment.xp = augmentsXP;
     augment.rarity = rarity;
+    augment.canPurchase = augmentsCanPurchase;
+    augment.canDrop = augmentsCanDrop;
   }
 
   populateCardSettings();
@@ -189,6 +203,8 @@ function setAllMonsters()
   var monsterCost = getFormValue("allMonsterCost");
   var monsterRefund = getFormValue("allMonsterRefund");
   var monsterXP = getFormValue("allMonsterXP");
+  var monsterCanPurchase = document.getElementById("allMonsterCanPurchase").checked;
+  var monsterCanDrop = document.getElementById("allMonsterCanDrop").checked;
 
   var rElement = document.getElementById("allMonsterRarity");
   var rarity = rElement.options[rElement.selectedIndex].value;
@@ -199,6 +215,8 @@ function setAllMonsters()
     monster.refund = monsterRefund;
     monster.xp = monsterXP;
     monster.rarity = rarity;
+    monster.canPurchase = monsterCanPurchase;
+    monster.canDrop = monsterCanDrop;
   }
 
   populateCardSettings();
@@ -312,7 +330,7 @@ function runSims() {
     {
       // for each sim, we...
       // reset values
-      var safetyCheck = 10000; // we dont do more than this many runs
+      var safetyCheck = 10000; // we dont do more than this many iterations per sim
       var stopCondition = false;
 
       totalMissions = 0;
@@ -322,6 +340,28 @@ function runSims() {
 
       // decide which card we want
       desiredCard = selectRandomCard(desiredCardType);
+      // for safety, make sure we can't choose a card we can't actually attain
+      // jesus christ this logic is gnarly, but it's basically saying:
+      // you can't buy cards and the card isn't droppable, OR
+      // the card can't be bought or dropped
+      if(((!buyCards && !cardData[desiredCard.type][desiredCard.id].canDrop)) || (!cardData[desiredCard.type][desiredCard.id].canPurchase && !cardData[desiredCard.type][desiredCard.id].canDrop))
+      {
+        var safetyChooseCheck = 10000;
+        var foundGoodCard = false;
+        while(!foundGoodCard && safetyChooseCheck > 0)
+        {
+          safetyChooseCheck--;
+          desiredCard = selectRandomCard(desiredCardType);
+          foundGoodCard = !(((!buyCards && !cardData[desiredCard.type][desiredCard.id].canDrop)) || (!cardData[desiredCard.type][desiredCard.id].canPurchase && !cardData[desiredCard.type][desiredCard.id].canDrop));
+        }
+
+        if(safetyChooseCheck <= 0)
+        {
+          console.log("ERROR: Couldn't find a valid card to target. This means that in 10,000 iterations, we couldn't find a card that was either droppable or purchasable. Check your settings.");
+          break;
+        }
+      }
+
       desiredLevelingCharacter = selectRandomCharacter();
 
       // run the missions
@@ -331,7 +371,7 @@ function runSims() {
         // if we didn't get the card we want, let's see if we can buy it here
         if(!stopCondition)
         {
-          if(desiredTarget == 0 && totalCrowns >= getCost(desiredCard.type, desiredCard.id))
+          if(buyCards && desiredTarget == 0 && totalCrowns >= getCost(desiredCard.type, desiredCard.id))
           {
             // we can! we are done
             stopCondition = true;
@@ -728,7 +768,6 @@ function selectRandomCard(type)
     var keys = Object.keys(cardData[type]);
     var index = Math.floor(Math.random() * keys.length);
     card.id = keys[index];
-
   }
 
   return card;
@@ -751,9 +790,39 @@ function dropCard()
   var simCardArray = [];
   for(var card of Object.values(cardData[category]))
   {
-    if(card.rarity == rarity)
+    if((card.rarity == rarity) && card.canDrop)
     {
       simCardArray.push(card);
+    }
+  }
+
+  if(simCardArray.length == 0)
+  {
+    // whoops. we picked a bad category or rarity. let's forget rarity
+    for(var card of Object.values(cardData[category]))
+    {
+      if(card.canDrop)
+      {
+        simCardArray.push(card);
+      }
+    }
+
+    if(simCardArray == 0)
+    {
+      // ok, literally no cards in this category are droppable. this is a bad state we're in,
+      // so we're going to pick from all cards at random now
+      for(var index = 0; index < allIds.length; index++)
+      {
+        var type = allTypes[index];
+        var id = allIds[index];
+        if(cardData[type][id].canDrop) { simCardArray.push(cardData[type][id]); }
+      }
+
+      if(simCardArray == 0)
+      {
+        // we done fucked up. bail
+        return null;
+      }
     }
   }
 
@@ -796,8 +865,7 @@ function getCard(cardType, cardId)
 
 function tryBuyCardForXP(character)
 {
-  // for now, we're just targeting Lucky Jack.
-  // so find the first card we don't own on him and try to buy it.
+  // find the first card we don't own for the character and buy it
 
   // first, bail if we don't have enough for anything
   var enoughToBuyAnything = false;
@@ -820,7 +888,7 @@ function tryBuyCardForXP(character)
   if(totalCrowns > lowestCost[1])
   {
     // let's start by getting an array of ability cards for the character
-    var cardIds = getCardIDs(1, character);
+    var cardIds = getCardIDs(1, character, true, false);
     // we can then compare that w/ the list that we have
     // the first cardId we find that we don't have in our collection is the one we should buy
     for(var x = 0; x < cardIds.length; x++)
@@ -846,7 +914,7 @@ function tryBuyCardForXP(character)
   // if we have enough left over for a blueprint (somehow), try that too
   if(totalCrowns > blueprintCardCost)
   {
-    var cardIds = getCardIDs(3, character);
+    var cardIds = getCardIDs(3, character, true, false);
     // we can then compare that w/ the list that we have
     // the first cardId we find that we don't have in our collection is the one we should buy
     for(var x = 0; x < cardIds.length; x++)

@@ -71,7 +71,7 @@
 		<div id="costSettingsContainer">
 			<table id="cardSettingsTable">
 				<tr>
-					<th></th><th>Card Cost</th><th>Card Refund</th><th>XP Value</th><th>Rarity</th>
+					<th></th><th>Card Cost</th><th>Card Refund</th><th>XP Value</th><th>Rarity</th><th>Can Purchase</th><th>Can Drop</th>
 				</tr>
 				<tbody id="cardSettingsAllAbilityRow">
 					<td><button onclick="setAllAbilities();">Set All Abilities</button></td>
@@ -84,6 +84,8 @@
 						<option value=3>Rare</option>
 						<option value=4>Legendary</option>
 					</select></td>
+					<td><input type="checkbox" id="allAbilityCanPurchase" checked /></td>
+					<td><input type="checkbox" id="allAbilityCanDrop" checked /></td>
 				</tbody>
 				<tbody id="cardSettingsAbilityRow"></tbody>
 				<tbody id="cardSettingsAllBlueprintRow">
@@ -97,6 +99,8 @@
 						<option value=3>Rare</option>
 						<option value=4>Legendary</option>
 					</select></td>
+					<td><input type="checkbox" id="allBlueprintCanPurchase" checked /></td>
+					<td><input type="checkbox" id="allBlueprintCanDrop" checked /></td>
 				</tbody>
 				<tbody id="cardSettingsBlueprintRow"></tbody>
 				<tbody id="cardSettingsAllAugmentRow">
@@ -110,6 +114,8 @@
 						<option value=3>Rare</option>
 						<option value=4>Legendary</option>
 					</select></td>
+					<td><input type="checkbox" id="allAugmentCanPurchase" checked /></td>
+					<td><input type="checkbox" id="allAugmentCanDrop" checked /></td>
 				</tbody>
 				<tbody id="cardSettingsAugmentRow"></tbody>
 				<tbody id="cardSettingsAllMonsterRow">
@@ -123,6 +129,8 @@
 						<option value=3>Rare</option>
 						<option value=4>Legendary</option>
 					</select></td>
+					<td><input type="checkbox" id="allMonsterCanPurchase" checked /></td>
+					<td><input type="checkbox" id="allMonsterCanDrop" checked /></td>
 				</tbody>
 				<tbody id="cardSettingsMonsterRow"></tbody>
 			</table>
