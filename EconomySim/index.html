@@ -73,64 +73,97 @@
 				<tr>
 					<th></th><th>Card Cost</th><th>Card Refund</th><th>XP Value</th><th>Rarity</th><th>Can Purchase</th><th>Can Drop</th>
 				</tr>
+				<tr>
+					<td></td>
+					<td colspan=6><hr></td>
+				</tr>
 				<tbody id="cardSettingsAllAbilityRow">
-					<td><button onclick="setAllAbilities();">Set All Abilities</button></td>
-					<td><input type="text" id="allAbilityCost" value=0 /></td>
-					<td><input type="text" id="allAbilityRefund" value=0 /></td>
-					<td><input type="text" id="allAbilityXP" value=0 /></td>
+					<!--<td><button onclick="setAllAbilities();">Set All Abilities</button></td>-->
+					<td><b>ABILITIES</b></td>
+					<td><input type="text" id="allAbilityCost" value=0 /><button onclick="setAllAbilityCosts();">Set All</button></td>
+					<td><input type="text" id="allAbilityRefund" value=0 /><button onclick="setAllAbilityRefunds();">Set All</button></td>
+					<td><input type="text" id="allAbilityXP" value=0 /><button onclick="setAllAbilityXP();">Set All</button></td>
 					<td><select id="allAbilityRarity">
 						<option value=1>Common</option>
 						<option value=2>Uncommon</option>
 						<option value=3>Rare</option>
 						<option value=4>Legendary</option>
-					</select></td>
-					<td><input type="checkbox" id="allAbilityCanPurchase" checked /></td>
-					<td><input type="checkbox" id="allAbilityCanDrop" checked /></td>
+					</select><button onclick="setAllAbilityRarity();">Set All</button></td>
+					<td><input type="checkbox" id="allAbilityCanPurchase" checked /><button onclick="setAllAbilityCanPurchase();">Set All</button></td>
+					<td><input type="checkbox" id="allAbilityCanDrop" checked /><button onclick="setAllAbilityCanDrop();">Set All</button></td>
+					<tr>
+						<td></td>
+						<td colspan=6><hr></td>
+					</tr>
 				</tbody>
 				<tbody id="cardSettingsAbilityRow"></tbody>
+				<tr>
+					<td></td>
+					<td colspan=6><hr></td>
+				</tr>
 				<tbody id="cardSettingsAllBlueprintRow">
-					<td><button onclick="setAllBlueprints();">Set All Blueprints</button></td>
-					<td><input type="text" id="allBlueprintCost" value=0 /></td>
-					<td><input type="text" id="allBlueprintRefund" value=0 /></td>
-					<td><input type="text" id="allBlueprintXP" value=0 /></td>
+					<td><b>BLUEPRINTS</b></td>
+					<td><input type="text" id="allBlueprintCost" value=0 /><button onclick="setAllBlueprintCosts();">Set All</button></td>
+					<td><input type="text" id="allBlueprintRefund" value=0 /><button onclick="setAllBlueprintRefunds();">Set All</button></td>
+					<td><input type="text" id="allBlueprintXP" value=0 /><button onclick="setAllBlueprintXP();">Set All</button></td>
 					<td><select id="allBlueprintRarity">
 						<option value=1>Common</option>
 						<option value=2>Uncommon</option>
 						<option value=3>Rare</option>
 						<option value=4>Legendary</option>
-					</select></td>
-					<td><input type="checkbox" id="allBlueprintCanPurchase" checked /></td>
-					<td><input type="checkbox" id="allBlueprintCanDrop" checked /></td>
+					</select><button onclick="setAllBlueprintRarity();">Set All</button></td>
+					<td><input type="checkbox" id="allBlueprintCanPurchase" checked /><button onclick="setAllBlueprintCanPurchase();">Set All</button></td>
+					<td><input type="checkbox" id="allBlueprintCanDrop" checked /><button onclick="setAllBlueprintCanDrop();">Set All</button></td>
+					<tr>
+						<td></td>
+						<td colspan=6><hr></td>
+					</tr>
 				</tbody>
 				<tbody id="cardSettingsBlueprintRow"></tbody>
+				<tr>
+					<td></td>
+					<td colspan=6><hr></td>
+				</tr>
 				<tbody id="cardSettingsAllAugmentRow">
-					<td><button onclick="setAllAugments();">Set All Augments</button></td>
-					<td><input type="text" id="allAugmentCost" value=0 /></td>
-					<td><input type="text" id="allAugmentRefund" value=0 /></td>
-					<td><input type="text" id="allAugmentXP" value=0 /></td>
+					<td><b>AUGMENTS</b></td>
+					<td><input type="text" id="allAugmentCost" value=0 /><button onclick="setAllAugmentCosts();">Set All</button></td>
+					<td><input type="text" id="allAugmentRefund" value=0 /><button onclick="setAllAugmentRefunds();">Set All</button></td>
+					<td><input type="text" id="allAugmentXP" value=0 /><button onclick="setAllAugmentXP();">Set All</button></td>
 					<td><select id="allAugmentRarity">
 						<option value=1>Common</option>
 						<option value=2>Uncommon</option>
 						<option value=3>Rare</option>
 						<option value=4>Legendary</option>
-					</select></td>
-					<td><input type="checkbox" id="allAugmentCanPurchase" checked /></td>
-					<td><input type="checkbox" id="allAugmentCanDrop" checked /></td>
+					</select><button onclick="setAllAugmentRarity();">Set All</button></td>
+					<td><input type="checkbox" id="allAugmentCanPurchase" checked /><button onclick="setAllAugmentCanPurchase();">Set All</button></td>
+					<td><input type="checkbox" id="allAugmentCanDrop" checked /><button onclick="setAllAugmentCanDrop();">Set All</button></td>
+					<tr>
+						<td></td>
+						<td colspan=6><hr></td>
+					</tr>
 				</tbody>
 				<tbody id="cardSettingsAugmentRow"></tbody>
+				<tr>
+					<td></td>
+					<td colspan=6><hr></td>
+				</tr>
 				<tbody id="cardSettingsAllMonsterRow">
-					<td><button onclick="setAllMonsters();">Set All Monsters</button></td>
-					<td><input type="text" id="allMonsterCost" value=0 /></td>
-					<td><input type="text" id="allMonsterRefund" value=0 /></td>
-					<td><input type="text" id="allMonsterXP" value=0 /></td>
+					<td><b>MONSTERS</b></td>
+					<td><input type="text" id="allMonsterCost" value=0 /><button onclick="setAllMonsterCosts();">Set All</button></td>
+					<td><input type="text" id="allMonsterRefund" value=0 /><button onclick="setAllMonsterRefunds();">Set All</button></td>
+					<td><input type="text" id="allMonsterXP" value=0 /><button onclick="setAllMonsterXP();">Set All</button></td>
 					<td><select id="allMonsterRarity">
 						<option value=1>Common</option>
 						<option value=2>Uncommon</option>
 						<option value=3>Rare</option>
 						<option value=4>Legendary</option>
-					</select></td>
-					<td><input type="checkbox" id="allMonsterCanPurchase" checked /></td>
-					<td><input type="checkbox" id="allMonsterCanDrop" checked /></td>
+					</select><button onclick="setAllMonsterRarity();">Set All</button></td>
+					<td><input type="checkbox" id="allMonsterCanPurchase" checked /><button onclick="setAllMonsterCanPurchase();">Set All</button></td>
+					<td><input type="checkbox" id="allMonsterCanDrop" checked /><button onclick="setAllMonsterCanDrop();">Set All</button></td>
+					<tr>
+						<td></td>
+						<td colspan=6><hr></td>
+					</tr>
 				</tbody>
 				<tbody id="cardSettingsMonsterRow"></tbody>
 			</table>

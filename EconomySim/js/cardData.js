@@ -1,4 +1,4 @@
-var version = 5;
+var version = 6;
 // character list
 var characterList = [1, 2, 3, 4];
 // card data
@@ -283,4 +283,321 @@ function resetSettings()
 {
 	window.localStorage.setItem('fromRustDevSettings', '');
 	window.localStorage.setItem('fromRustDevCollection', '');
+}
+
+// helper functions for saving things in bulk
+function setAllAbilityCosts()
+{
+  var abilityCost = getFormValue("allAbilityCost");
+
+  for(var ability of Object.values(cardData[1]))
+  {
+    ability.cost = abilityCost;
+  }
+
+  populateCardSettings();
+  saveData();
+}
+
+function setAllAbilityRefunds()
+{
+  var abilityRefund = getFormValue("allAbilityRefund");
+
+  for(var ability of Object.values(cardData[1]))
+  {
+    ability.refund = abilityRefund;
+  }
+
+  populateCardSettings();
+  saveData();
+}
+
+function setAllAbilityXP()
+{
+  var abilityXP = getFormValue("allAbilityXP");
+
+  for(var ability of Object.values(cardData[1]))
+  {
+    ability.xp = abilityXP;
+  }
+
+  populateCardSettings();
+  saveData();
+}
+
+function setAllAbilityRarity()
+{
+  var rElement = document.getElementById("allAbilityRarity");
+  var rarity = rElement.options[rElement.selectedIndex].value;
+
+  for(var ability of Object.values(cardData[1]))
+  {
+    ability.rarity = rarity;
+  }
+
+  populateCardSettings();
+  saveData();
+}
+
+function setAllAbilityCanPurchase()
+{
+  var abilityCanPurchase = document.getElementById("allAbilityCanPurchase").checked;
+
+  for(var ability of Object.values(cardData[1]))
+  {
+    ability.canPurchase = abilityCanPurchase;
+  }
+
+  populateCardSettings();
+  saveData();
+}
+
+function setAllAbilityCanDrop()
+{
+  var abilityCanDrop = document.getElementById("allAbilityCanDrop").checked;
+
+  for(var ability of Object.values(cardData[1]))
+  {
+    ability.canDrop = abilityCanDrop;
+  }
+
+  populateCardSettings();
+  saveData();
+}
+
+function setAllBlueprintCosts()
+{
+  var blueprintCost = getFormValue("allBlueprintCost");
+
+  for(var blueprint of Object.values(cardData[3]))
+  {
+    blueprint.cost = blueprintCost;
+  }
+
+  populateCardSettings();
+  saveData();
+}
+
+function setAllBlueprintRefunds()
+{
+  var blueprintRefund = getFormValue("allBlueprintRefund");
+
+  for(var blueprint of Object.values(cardData[3]))
+  {
+    blueprint.refund = blueprintRefund;
+  }
+
+  populateCardSettings();
+  saveData();
+}
+
+function setAllBlueprintXP()
+{
+  var blueprintXP = getFormValue("allBlueprintXP");
+
+  for(var blueprint of Object.values(cardData[3]))
+  {
+    blueprint.xp = blueprintXP;
+  }
+
+  populateCardSettings();
+  saveData();
+}
+
+function setAllBlueprintRarity()
+{
+  var rElement = document.getElementById("allBlueprintRarity");
+  var rarity = rElement.options[rElement.selectedIndex].value;
+
+  for(var blueprint of Object.values(cardData[3]))
+  {
+    blueprint.rarity = rarity;
+  }
+
+  populateCardSettings();
+  saveData();
+}
+
+function setAllBlueprintCanPurchase()
+{
+  var blueprintCanPurchase = document.getElementById("allBlueprintCanPurchase").checked;
+
+  for(var blueprint of Object.values(cardData[3]))
+  {
+    blueprint.canPurchase = blueprintCanPurchase;
+  }
+
+  populateCardSettings();
+  saveData();
+}
+
+function setAllBlueprintCanDrop()
+{
+  var blueprintCanDrop = document.getElementById("allBlueprintCanDrop").checked;
+
+  for(var blueprint of Object.values(cardData[3]))
+  {
+    blueprint.canDrop = blueprintCanDrop;
+  }
+
+  populateCardSettings();
+  saveData();
+}
+
+function setAllAugmentCosts()
+{
+  var augmentCost = getFormValue("allAugmentCost");
+
+  for(var augment of Object.values(cardData[2]))
+  {
+    augment.cost = augmentCost;
+  }
+
+  populateCardSettings();
+  saveData();
+}
+
+function setAllAugmentRefunds()
+{
+  var augmentRefund = getFormValue("allAugmentRefund");
+
+  for(var augment of Object.values(cardData[2]))
+  {
+    augment.refund = augmentRefund;
+  }
+
+  populateCardSettings();
+  saveData();
+}
+
+function setAllAugmentXP()
+{
+  var augmentXP = getFormValue("allAugmentXP");
+
+  for(var augment of Object.values(cardData[2]))
+  {
+    augment.xp = augmentXP;
+  }
+
+  populateCardSettings();
+  saveData();
+}
+
+function setAllAugmentRarity()
+{
+  var rElement = document.getElementById("allAugmentRarity");
+  var rarity = rElement.options[rElement.selectedIndex].value;
+
+  for(var augment of Object.values(cardData[2]))
+  {
+    augment.rarity = rarity;
+  }
+
+  populateCardSettings();
+  saveData();
+}
+
+function setAllAugmentCanPurchase()
+{
+  var augmentCanPurchase = document.getElementById("allAugmentCanPurchase").checked;
+
+  for(var augment of Object.values(cardData[2]))
+  {
+    augment.canPurchase = augmentCanPurchase;
+  }
+
+  populateCardSettings();
+  saveData();
+}
+
+function setAllAugmentCanDrop()
+{
+  var augmentCanDrop = document.getElementById("allAugmentCanDrop").checked;
+
+  for(var augment of Object.values(cardData[2]))
+  {
+    augment.canDrop = augmentCanDrop;
+  }
+
+  populateCardSettings();
+  saveData();
+}
+
+function setAllMonsterCosts()
+{
+  var monsterCost = getFormValue("allMonsterCost");
+
+  for(var monster of Object.values(cardData[4]))
+  {
+    monster.cost = monsterCost;
+  }
+
+  populateCardSettings();
+  saveData();
+}
+
+function setAllMonsterRefunds()
+{
+  var monsterRefund = getFormValue("allMonsterRefund");
+
+  for(var monster of Object.values(cardData[4]))
+  {
+    monster.refund = monsterRefund;
+  }
+
+  populateCardSettings();
+  saveData();
+}
+
+function setAllMonsterXP()
+{
+  var monsterXP = getFormValue("allMonsterXP");
+
+  for(var monster of Object.values(cardData[4]))
+  {
+    monster.xp = monsterXP;
+  }
+
+  populateCardSettings();
+  saveData();
+}
+
+function setAllMonsterRarity()
+{
+  var rElement = document.getElementById("allMonsterRarity");
+  var rarity = rElement.options[rElement.selectedIndex].value;
+
+  for(var monster of Object.values(cardData[4]))
+  {
+    monster.rarity = rarity;
+  }
+
+  populateCardSettings();
+  saveData();
+}
+
+function setAllMonsterCanPurchase()
+{
+  var monsterCanPurchase = document.getElementById("allMonsterCanPurchase").checked;
+
+  for(var monster of Object.values(cardData[4]))
+  {
+    monster.canPurchase = monsterCanPurchase;
+  }
+
+  populateCardSettings();
+  saveData();
+}
+
+function setAllMonsterCanDrop()
+{
+  var monsterCanDrop = document.getElementById("allMonsterCanDrop").checked;
+
+  for(var monster of Object.values(cardData[4]))
+  {
+    monster.canDrop = monsterCanDrop;
+  }
+
+  populateCardSettings();
+  saveData();
 }

@@ -8,7 +8,7 @@ TO-DO
 - add new result panes so we can do comparisons
 - drop rate sim: sort collection by type then #
 - add zone level as a concept
-- quality of life for card collection - put the "set all" buttons above the columns
+--- character level?
 
 REFACTOR
 - how we store card/card data - everything should just be refs to the cardData objects honestly, no more of this store-by-name crap or whatever
