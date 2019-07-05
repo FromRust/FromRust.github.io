@@ -1,7 +1,12 @@
 // setting up global vars
 
 // settings - leveling settings
-var xpPerLevel = 400;
+var xpForFirstLevel = 400;
+var levelExponent = 1;
+var numPlayers = 1;
+var xpForSuccess = 100;
+var xpForFailure = 10;
+var actualNumPlayers = 1; // we have to convert from the form value to the usable value
 
 // settings - sim globals
 var numSims = 10000;
@@ -51,6 +56,7 @@ var totalMissions = 0;
 var totalMissionsWon = 0;
 var totalArray = {};
 var totalCrowns = 0;
+var totalXP = 0;
 
 // aggregates for convenient lookup later
 var lowestCost = [99999, 99999, 99999, 99999, 99999]; // one for every type
@@ -74,7 +80,17 @@ function getFormValue(id) {
   return parseInt((document.getElementById(id)).value);
 }
 
+function getFormValueFloat(id) {
+  return parseFloat((document.getElementById(id)).value);
+}
+
 function gatherData() {
+  xpForFirstLevel = getFormValue("xpForFirstLevel");
+  levelExponent = getFormValueFloat("levelExponent");
+  numPlayers = document.querySelector('input[name="numPlayers"]:checked').value;
+  xpForSuccess = getFormValue("xpForSuccess");
+  xpForFailure = getFormValue("xpForFailure");
+
   missionSuccessPercent = getFormValue("missionSuccessPercent");
 
   numCardsOnMissionSuccess = getFormValue("missionSuccessCards");
@@ -117,8 +133,6 @@ function gatherData() {
     }
   }
 
-  xpPerLevel = getFormValue("xpPerLevel");
-
   // save data to local storage
   saveData();
 }
@@ -130,6 +144,12 @@ function saveData()
   window.localStorage.setItem('fromRustDevCollection', JSON.stringify(cardData));
 
   var settingsObj = {};
+  settingsObj["xpForFirstLevel"] = xpForFirstLevel;
+  settingsObj["levelExponent"] = levelExponent;
+  settingsObj["numPlayers"] = numPlayers;
+  settingsObj["xpForSuccess"] = xpForSuccess;
+  settingsObj["xpForFailure"] = xpForFailure;
+
   settingsObj["missionSuccessPercent"] = missionSuccessPercent;
   settingsObj["numCardsOnMissionSuccess"] = numCardsOnMissionSuccess;
   settingsObj["missionSuccessCrowns"] = missionSuccessCrowns;
@@ -139,7 +159,6 @@ function saveData()
   settingsObj["onlySellDuplicates"] = onlySellDuplicates;
   settingsObj["desiredCardType"] = desiredCardType;
   settingsObj["desiredTarget"] = desiredTarget;
-  settingsObj["xpPerLevel"] = xpPerLevel;
 
   settingsObj["dropRateNormal"] = dropRateNormal;
   settingsObj["dropRateUncommon"] = dropRateUncommon;
@@ -204,15 +223,15 @@ function runSims() {
   // gather data from form
   gatherData();
 
+  if(numPlayers == 0) { actualNumPlayers = 1; }
+  if(numPlayers == 1) { actualNumPlayers = 2; }
+  if(numPlayers == 2) { actualNumPlayers = 4; }
+
   // prep total array var depending on sim type
   totalArray = [];
-  if(desiredTarget == 1)
+  if(desiredTarget == 2)
   {
-    totalArray = {1: [0], 2: [0], 3: [0], 4: [0]};
-  }
-  else if(desiredTarget == 2)
-  {
-    totalArray = {}; // we will just fill it with card names and totals
+    totalArray = {}; // need to use a map instead
   }
 
   // prep drop rate tables
@@ -226,6 +245,7 @@ function runSims() {
   }
   else
   {
+    if(desiredTarget == 1) { numSims = 1; } // only need to run the gauntlet once for the leveling simulator
     for(var s = 0; s < numSims; s++)
     {
       // for each sim, we...
@@ -236,6 +256,7 @@ function runSims() {
       totalMissions = 0;
       totalMissionsWon = 0;
       totalCrowns = 0;
+      totalXP = 0;
       resetCardCollection();
 
       // decide which card we want
@@ -262,7 +283,7 @@ function runSims() {
         }
       }
 
-      desiredLevelingCharacter = selectRandomCharacter();
+      //desiredLevelingCharacter = selectRandomCharacter();
 
       // run the missions
       for(var x = 0; (x < safetyCheck) && !stopCondition; x++)
@@ -277,10 +298,17 @@ function runSims() {
             stopCondition = true;
           }
 
-          // for desiredTarget 1, we should try to buy a card we don't have yet
-          if(desiredTarget == 1 && buyCards)
+          // for the leveling sim, check to see if this mission put us over a level threshold
+          // if it did, we record the # missions that took us there
+          if(desiredTarget == 1)
           {
-            tryBuyCardForXP(desiredLevelingCharacter);
+            var currentLevel = totalArray.length;
+            var xpNeeded = calculateXPRequiredForLevel(currentLevel + 1);
+            if(totalXP >= xpNeeded)
+            {
+              totalArray.push(totalMissions);
+            }
+
             stopCondition = checkStopCondition();
           }
         }
@@ -296,10 +324,10 @@ function runSims() {
         {
           totalArray.push(totalMissions);
         }
-        else
+        /*else
         {
           totalArray[desiredLevelingCharacter].push(totalMissions);
-        }
+        }*/
       }
       else
       {
@@ -307,10 +335,10 @@ function runSims() {
         {
           totalArray.push(safetyCheck);
         }
-        else
+        /*else
         {
           totalArray[desiredLevelingCharacter].push(safetyCheck);
-        }
+        }*/
       }
     }
   }
@@ -339,7 +367,7 @@ function displayResults()
   }
   else if(desiredTarget == 1)
   {
-    innerHTMLString += "Level from 1 to 2.<br />";
+    innerHTMLString += "Level as high as possible.<br />";
   }
   else if(desiredTarget == 2)
   {
@@ -376,8 +404,15 @@ function displayResults()
     innerHTMLString += "RAW COLLECTION DUMP: <br />";
     innerHTMLString += rawCardCollectionString;
   }
-  else
+  else if(desiredTarget == 1)
   {
+    innerHTMLString += "Missions to hit level thresholds: <br />";
+    for(var x = 0; x < totalArray.length; x++)
+    {
+      innerHTMLString += (x + 1) + ": " + totalArray[x] + "<br />";
+    }
+  }
+  else {
     innerHTMLString += "Average missions ran: " + getAvgMissions() + "<br />";
     innerHTMLString += "-- SAMPLE DATA (FINAL ITERATION) -- <br />";
     if(desiredTarget == 0)
@@ -455,11 +490,15 @@ function runSingleSim() {
       var hackyTmpCrap = getTypeAndId(card.name);
       getCard(hackyTmpCrap.type, hackyTmpCrap.id);
     }
+
+    // also add some xp
+    totalXP += ((xpForSuccess / 4) * actualNumPlayers);
   }
   else
   {
     // give 'em crowns on failure
     totalCrowns += missionFailureCrowns;
+    totalXP += ((xpForFailure / 4) * actualNumPlayers);
   }
 
   // see if we're good to go
@@ -483,17 +522,22 @@ function checkStopCondition()
     return (cardCollection[desiredCard.type][desiredCard.id].numOwned > 0);
   }
 
-  if(desiredTarget == 1)
+  /*if(desiredTarget == 1)
   {
     return calculateLevel(desiredLevelingCharacter) >= 1;
-  }
+  }*/
   
   return false;
 }
 
-function calculateLevel(champion)
+/*function calculateLevel(champion)
 {
   return characterCollection[champion] / xpPerLevel;
+}*/
+
+function calculateXPRequiredForLevel(level)
+{
+  return Math.floor(xpForFirstLevel * Math.pow(level, levelExponent));
 }
 
 function runMission()
@@ -904,6 +948,20 @@ function tryLoadData()
     cardData = JSON.parse(localCardData);
     var settingsObj = JSON.parse(localSettings);
 
+    xpForFirstLevel = settingsObj["xpForFirstLevel"];
+    levelExponent = settingsObj["levelExponent"];
+    numPlayers = settingsObj["numPlayers"];
+    xpForSuccess = settingsObj["xpForSuccess"];
+    xpForFailure = settingsObj["xpForFailure"];
+
+    document.getElementById("xpForFirstLevel").value = xpForFirstLevel;
+    document.getElementById("levelExponent").value = levelExponent;
+    document.getElementById("xpForSuccess").value = xpForSuccess;
+    document.getElementById("xpForFailure").value = xpForFailure;
+
+    var numPlayersStrArray = ["numPlayersForXP1", "numPlayersForXP2", "numPlayersForXP4"];
+    document.getElementById(numPlayersStrArray[numPlayers]).checked = true;
+
     missionSuccessPercent = settingsObj["missionSuccessPercent"];
     document.getElementById("missionSuccessPercent").value = missionSuccessPercent;
     numCardsOnMissionSuccess = settingsObj["numCardsOnMissionSuccess"];
@@ -925,9 +983,7 @@ function tryLoadData()
     desiredTarget = settingsObj["desiredTarget"];
     // UGH
     var desiredTargetStrArray = ["desiredTargetCard", "desiredTargetLevel", "desiredTargetDropRateSim"];
-    xpPerLevel = settingsObj["xpPerLevel"];
     document.getElementById(desiredTargetStrArray[desiredTarget]).checked = true;
-    document.getElementById("xpPerLevel").value = xpPerLevel;
 
     dropRateNormal = settingsObj["dropRateNormal"];
     dropRateUncommon = settingsObj["dropRateUncommon"];

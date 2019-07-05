@@ -13,7 +13,11 @@
 	<div id="SettingsTab" class="tabcontent">
 		<u>Leveling Settings</u><br />
 		<div id="levelingSettings">
-			XP Needed Per Level: <input type="text" id="xpPerLevel" value=400 /><br />
+			XP Needed for First Level: <input type="text" id="xpForFirstLevel" value=400 /><br />
+			Exponent for Subsequent Levels: <input type="text" id="levelExponent" value=1 /><br />
+			# of Players: <input type="radio" id="numPlayersForXP1" name="numPlayers" value=0 checked>1<input type="radio" id="numPlayersForXP2" name="numPlayers" value=1>2<input type="radio" id="numPlayersForXP4" name="numPlayers" value=2>4<br />
+			XP for Mission Success: <input type="text" id="xpForSuccess" value=100 /><br />
+			XP for Mission Failure: <input type="text" id="xpForFailure" value=10 /><br />
 		</div>
 		<br />
 		<u>Card Pool Settings</u><br />
@@ -58,7 +62,7 @@
 		<br />
 		<u>Behavior Settings</u>
 		<div id="behaviorSettings">
-			Simulation Type: <input type="radio" id="desiredTargetCard" name="desiredTarget" value=0 checked>Random Card<input type="radio" id="desiredTargetLevel" name="desiredTarget" value=1>Level 1 to 2<input type="radio" id="desiredTargetDropRateSim" name="desiredTarget" value=2>Drop Rate Simulation<br />
+			Simulation Type: <input type="radio" id="desiredTargetCard" name="desiredTarget" value=0 checked>Random Card<input type="radio" id="desiredTargetLevel" name="desiredTarget" value=1>Leveling<input type="radio" id="desiredTargetDropRateSim" name="desiredTarget" value=2>Drop Rate Simulation<br />
 			Buy cards: <input type="checkbox" id="buyCards">
 			Sell cards: <input type="checkbox" id="sellCards">
 			Only sell duplicates: <input type="checkbox" id="onlySellDuplicates"><br />

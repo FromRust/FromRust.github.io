@@ -1,4 +1,4 @@
-var version = 6;
+var version = 7;
 // character list
 var characterList = [1, 2, 3, 4];
 // card data
